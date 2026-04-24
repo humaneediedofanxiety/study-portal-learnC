@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { createAssignment, getAssignmentsByCourse, submitAssignment, getSubmissions, gradeSubmission } from '../controllers/assignmentController.js.js';
-import { authenticateToken } from '../middleware/auth.js.js';
-import { isAdmin } from '../middleware/adminAuth.js.js';
+import { createAssignment, getAssignmentsByCourse, submitAssignment, getSubmissions, gradeSubmission } from '../controllers/assignmentController.js';
+import { authenticateToken } from '../middleware/auth.js';
+import { isAdmin } from '../middleware/adminAuth.js';
 
 const router = Router();
 

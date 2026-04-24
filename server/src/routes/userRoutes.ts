@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { getUserAssignments, getUserExams, getUserSchedule, getUserResources } from '../controllers/userController.js.js';
-import { authenticateToken } from '../middleware/auth.js.js';
+import { getUserAssignments, getUserExams, getUserSchedule, getUserResources } from '../controllers/userController.js';
+import { authenticateToken } from '../middleware/auth.js';
 
 const router = Router();
 
