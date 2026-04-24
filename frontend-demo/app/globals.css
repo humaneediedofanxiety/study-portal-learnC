@@ -1,0 +1,182 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Retro Wiki Theme - Light Mode */
+  --background: #FAFAFA;
+  --foreground: #1A1A1A;
+  --card: #FFFFFF;
+  --card-foreground: #1A1A1A;
+  --popover: #FFFFFF;
+  --popover-foreground: #1A1A1A;
+  --primary: #1A1A1A;
+  --primary-foreground: #FFFFFF;
+  --secondary: #F0F0F0;
+  --secondary-foreground: #1A1A1A;
+  --muted: #E8E8E8;
+  --muted-foreground: #666666;
+  --accent: #1A1A1A;
+  --accent-foreground: #FFFFFF;
+  --destructive: #1A1A1A;
+  --destructive-foreground: #FFFFFF;
+  --border: #1A1A1A;
+  --input: #FFFFFF;
+  --ring: #1A1A1A;
+  
+  /* Status Colors - Monochrome */
+  --success: #1A1A1A;
+  --success-foreground: #FFFFFF;
+  --warning: #666666;
+  --warning-foreground: #FFFFFF;
+  --error: #1A1A1A;
+  --error-foreground: #FFFFFF;
+  
+  /* Category Colors - All monochrome */
+  --jigsaw-yellow: #1A1A1A;
+  --jigsaw-pink: #1A1A1A;
+  --jigsaw-purple: #1A1A1A;
+  
+  /* Chart Colors - Grayscale */
+  --chart-1: #1A1A1A;
+  --chart-2: #444444;
+  --chart-3: #666666;
+  --chart-4: #888888;
+  --chart-5: #AAAAAA;
+  
+  --radius: 0rem;
+  
+  /* Sidebar */
+  --sidebar: #FFFFFF;
+  --sidebar-foreground: #1A1A1A;
+  --sidebar-primary: #1A1A1A;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #F0F0F0;
+  --sidebar-accent-foreground: #1A1A1A;
+  --sidebar-border: #1A1A1A;
+  --sidebar-ring: #1A1A1A;
+}
+
+.dark {
+  --background: #0A0A0A;
+  --foreground: #E8E8E8;
+  --card: #141414;
+  --card-foreground: #E8E8E8;
+  --popover: #141414;
+  --popover-foreground: #E8E8E8;
+  --primary: #E8E8E8;
+  --primary-foreground: #0A0A0A;
+  --secondary: #1F1F1F;
+  --secondary-foreground: #E8E8E8;
+  --muted: #262626;
+  --muted-foreground: #888888;
+  --accent: #E8E8E8;
+  --accent-foreground: #0A0A0A;
+  --destructive: #E8E8E8;
+  --destructive-foreground: #0A0A0A;
+  --border: #E8E8E8;
+  --input: #1F1F1F;
+  --ring: #E8E8E8;
+  
+  --success: #E8E8E8;
+  --success-foreground: #0A0A0A;
+  --warning: #888888;
+  --warning-foreground: #0A0A0A;
+  --error: #E8E8E8;
+  --error-foreground: #0A0A0A;
+  
+  --jigsaw-yellow: #E8E8E8;
+  --jigsaw-pink: #E8E8E8;
+  --jigsaw-purple: #E8E8E8;
+  
+  --sidebar: #141414;
+  --sidebar-foreground: #E8E8E8;
+  --sidebar-primary: #E8E8E8;
+  --sidebar-primary-foreground: #0A0A0A;
+  --sidebar-accent: #1F1F1F;
+  --sidebar-accent-foreground: #E8E8E8;
+  --sidebar-border: #E8E8E8;
+  --sidebar-ring: #E8E8E8;
+}
+
+@theme inline {
+  --font-sans: var(--font-inter), 'Helvetica Neue', 'Arial', sans-serif;
+  --font-serif: var(--font-inter), 'Helvetica Neue', 'Arial', sans-serif;
+  --font-mono: var(--font-inter), 'Helvetica Neue', 'Arial', sans-serif;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-error: var(--error);
+  --color-error-foreground: var(--error-foreground);
+  --color-jigsaw-yellow: var(--jigsaw-yellow);
+  --color-jigsaw-pink: var(--jigsaw-pink);
+  --color-jigsaw-purple: var(--jigsaw-purple);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: 0rem;
+  --radius-md: 0rem;
+  --radius-lg: 0rem;
+  --radius-xl: 0rem;
+  --radius-2xl: 0rem;
+  --radius-full: 0rem;
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Retro Wiki utility classes */
+@layer utilities {
+  .shadow-card {
+    box-shadow: none;
+  }
+  .shadow-card-hover {
+    box-shadow: none;
+  }
+  .transition-theme {
+    transition: all 0.1s ease;
+  }
+  .wiki-link {
+    @apply underline underline-offset-2 decoration-1;
+  }
+  .wiki-border {
+    @apply border border-border;
+  }
+}

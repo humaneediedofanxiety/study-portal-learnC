@@ -1,0 +1,149 @@
+/**
+ * StudyWiki Design Tokens Reference
+ * 
+ * This file documents all CSS custom properties used in the theme.
+ * The actual tokens are defined in globals.css - this serves as documentation.
+ */
+
+/* =============================================================================
+   COLOR TOKENS
+   ============================================================================= */
+
+/*
+ * LIGHT MODE COLORS
+ * 
+ * --background: #FAFAFA       Page background (off-white)
+ * --foreground: #1A1A1A       Primary text (near-black)
+ * --card: #FFFFFF             Card backgrounds (pure white)
+ * --card-foreground: #1A1A1A  Card text
+ * --secondary: #F0F0F0        Hover states, secondary backgrounds
+ * --secondary-foreground: #1A1A1A
+ * --muted: #E8E8E8            Disabled states, dividers
+ * --muted-foreground: #666666 Secondary text, captions
+ * --border: #1A1A1A           All borders (matches foreground)
+ * --input: #FFFFFF            Input backgrounds
+ * 
+ * DARK MODE COLORS
+ * 
+ * --background: #0A0A0A       Page background (near-black)
+ * --foreground: #E8E8E8       Primary text (off-white)
+ * --card: #141414             Card backgrounds
+ * --card-foreground: #E8E8E8  Card text
+ * --secondary: #1F1F1F        Hover states, secondary backgrounds
+ * --secondary-foreground: #E8E8E8
+ * --muted: #262626            Disabled states, dividers
+ * --muted-foreground: #888888 Secondary text, captions
+ * --border: #E8E8E8           All borders (matches foreground)
+ * --input: #1F1F1F            Input backgrounds
+ */
+
+/* =============================================================================
+   TYPOGRAPHY TOKENS
+   ============================================================================= */
+
+/*
+ * FONT FAMILY
+ * 
+ * --font-sans: var(--font-inter), 'Helvetica Neue', 'Arial', sans-serif
+ * --font-serif: var(--font-inter), 'Helvetica Neue', 'Arial', sans-serif
+ * --font-mono: var(--font-inter), 'Helvetica Neue', 'Arial', sans-serif
+ * 
+ * Note: All font stacks use Inter as the primary font.
+ * The --font-inter variable is set by Next.js font optimization.
+ */
+
+/* =============================================================================
+   BORDER TOKENS
+   ============================================================================= */
+
+/*
+ * BORDER RADIUS
+ * 
+ * --radius-sm: 0rem   No rounding
+ * --radius-md: 0rem   No rounding
+ * --radius-lg: 0rem   No rounding
+ * --radius-xl: 0rem   No rounding
+ * --radius-2xl: 0rem  No rounding
+ * --radius-full: 0rem No rounding (even "full" is square)
+ * 
+ * BORDER WIDTH: Always 1px
+ * BORDER STYLE: Always solid
+ * BORDER COLOR: var(--border) - matches foreground for high contrast
+ */
+
+/* =============================================================================
+   SHADOW TOKENS
+   ============================================================================= */
+
+/*
+ * SHADOWS
+ * 
+ * This theme uses NO shadows. All elevation is conveyed through borders.
+ * 
+ * .shadow-card { box-shadow: none; }
+ * .shadow-card-hover { box-shadow: none; }
+ */
+
+/* =============================================================================
+   SIDEBAR TOKENS
+   ============================================================================= */
+
+/*
+ * LIGHT MODE
+ * 
+ * --sidebar: #FFFFFF
+ * --sidebar-foreground: #1A1A1A
+ * --sidebar-primary: #1A1A1A
+ * --sidebar-primary-foreground: #FFFFFF
+ * --sidebar-accent: #F0F0F0
+ * --sidebar-accent-foreground: #1A1A1A
+ * --sidebar-border: #1A1A1A
+ * 
+ * DARK MODE
+ * 
+ * --sidebar: #141414
+ * --sidebar-foreground: #E8E8E8
+ * --sidebar-primary: #E8E8E8
+ * --sidebar-primary-foreground: #0A0A0A
+ * --sidebar-accent: #1F1F1F
+ * --sidebar-accent-foreground: #E8E8E8
+ * --sidebar-border: #E8E8E8
+ */
+
+/* =============================================================================
+   CHART TOKENS (GRAYSCALE)
+   ============================================================================= */
+
+/*
+ * --chart-1: #1A1A1A  Darkest
+ * --chart-2: #444444
+ * --chart-3: #666666
+ * --chart-4: #888888
+ * --chart-5: #AAAAAA  Lightest
+ */
+
+/* =============================================================================
+   TRANSITION TOKENS
+   ============================================================================= */
+
+/*
+ * .transition-theme {
+ *   transition: all 0.1s ease;
+ * }
+ * 
+ * Standard hover transitions use 0.1s for snappy feedback.
+ */
+
+/* =============================================================================
+   UTILITY CLASSES
+   ============================================================================= */
+
+/*
+ * .wiki-link {
+ *   @apply underline underline-offset-2 decoration-1;
+ * }
+ * 
+ * .wiki-border {
+ *   @apply border border-border;
+ * }
+ */

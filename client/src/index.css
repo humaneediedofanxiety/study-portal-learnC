@@ -1,0 +1,154 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Classic LearnC. Theme - Light Mode */
+  --background: #f5f5f5; /* Light grey background for the page */
+  --foreground: #333333;
+  --card: #FFFFFF; /* Pure white for content areas */
+  --card-foreground: #333333;
+  --popover: #FFFFFF;
+  --popover-foreground: #333333;
+  --primary: #005b94; /* Classic LearnC. OCW Blue */
+  --primary-foreground: #FFFFFF;
+  --secondary: #f5f5f5;
+  --secondary-foreground: #333333;
+  --muted: #f5f5f5;
+  --muted-foreground: #666666;
+  --accent: #A31F34; /* LearnC. Red for Give Now */
+  --accent-foreground: #FFFFFF;
+  --destructive: #A31F34;
+  --destructive-foreground: #FFFFFF;
+  --border: #CCCCCC;
+  --input: #FFFFFF;
+  --ring: #005b94;
+  
+  /* Status Colors */
+  --success: #28a745;
+  --success-foreground: #FFFFFF;
+  --warning: #ffc107;
+  --warning-foreground: #333333;
+  --error: #A31F34;
+  --error-foreground: #FFFFFF;
+  
+  --radius: 0rem; /* Flat design */
+  
+  /* Header & Banner */
+  --header-bg: #000000;
+  --header-foreground: #FFFFFF;
+  --course-banner-bg: #005b94;
+  --course-banner-foreground: #FFFFFF;
+
+  /* Sidebar */
+  --sidebar: #FFFFFF;
+  --sidebar-foreground: #333333;
+  --sidebar-primary: #005b94;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #f5f5f5;
+  --sidebar-accent-foreground: #005b94;
+  --sidebar-border: #e5e5e5;
+  --sidebar-ring: #005b94;
+}
+
+.dark {
+  --background: #121212;
+  --foreground: #e0e0e0;
+  --card: #1e1e1e;
+  --card-foreground: #e0e0e0;
+  --popover: #1e1e1e;
+  --popover-foreground: #e0e0e0;
+  --primary: #3399ff;
+  --primary-foreground: #FFFFFF;
+  --secondary: #121212;
+  --secondary-foreground: #e0e0e0;
+  --muted: #1e1e1e;
+  --muted-foreground: #999999;
+  --accent: #C32F44;
+  --accent-foreground: #FFFFFF;
+  --destructive: #C32F44;
+  --destructive-foreground: #FFFFFF;
+  --border: #333333;
+  --input: #1e1e1e;
+  --ring: #3399ff;
+  
+  --sidebar: #1e1e1e;
+  --sidebar-foreground: #e0e0e0;
+  --sidebar-primary: #3399ff;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #121212;
+  --sidebar-accent-foreground: #3399ff;
+  --sidebar-border: #333333;
+  --sidebar-ring: #3399ff;
+}
+
+@theme inline {
+  --font-sans: 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
+  --font-serif: 'Georgia', 'Times New Roman', serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-error: var(--error);
+  --color-error-foreground: var(--error-foreground);
+  --radius-sm: 0rem;
+  --radius-md: 0rem;
+  --radius-lg: 0rem;
+  --radius-xl: 0rem;
+  --radius-2xl: 0rem;
+  --radius-full: 0rem;
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+}
+
+/* Classic OCW utility classes */
+@layer utilities {
+  .shadow-none {
+    box-shadow: none;
+  }
+  .ocw-link {
+    @apply text-primary hover:underline underline-offset-4 cursor-pointer;
+  }
+  .ocw-border {
+    @apply border border-border;
+  }
+  .flat-btn {
+    @apply rounded-none transition-none;
+  }
+}
