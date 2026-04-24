@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { query } from '../config/db';
+import { query } from '../config/db.js.js';
 
 // User Management
 export const getAllUsers = async (req: Request, res: Response) => {

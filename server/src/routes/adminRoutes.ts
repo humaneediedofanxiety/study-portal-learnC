@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { getAllUsers, updateUserRole, deleteUser, getSystemStats, enrollStudent, unenrollStudent, getCourseEnrollments } from '../controllers/adminController';
-import { authenticateToken } from '../middleware/auth';
-import { isAdmin } from '../middleware/adminAuth';
+import { getAllUsers, updateUserRole, deleteUser, getSystemStats, enrollStudent, unenrollStudent, getCourseEnrollments } from '../controllers/adminController.js.js';
+import { authenticateToken } from '../middleware/auth.js.js';
+import { isAdmin } from '../middleware/adminAuth.js.js';
 
 const router = Router();
 

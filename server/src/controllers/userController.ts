@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { query } from '../config/db';
+import { query } from '../config/db.js.js';
 
 interface AuthRequest extends Request {
   user?: { id: number; email: string; role: string };

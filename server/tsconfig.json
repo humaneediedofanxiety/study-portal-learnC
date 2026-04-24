@@ -2,21 +2,14 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
-    "moduleResolution": "Bundler", 
+    "moduleResolution": "Bundler",
     "outDir": "./dist",
     "rootDir": "./src",
-    
-    /* Relaxing the strictness that caused the build fail */
-    "verbatimModuleSyntax": false,
-    "strict": false, 
-    "noUncheckedIndexedAccess": false,
-    
-    /* Necessary for Node + ESM */
+    "strict": false,
+    "noImplicitAny": false,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "moduleDetection": "force"
+    "verbatimModuleSyntax": false
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules"]
+  "include": ["src/**/*"]
 }

@@ -14,9 +14,9 @@ import {
   submitAssignment,
   gradeSubmission,
   getSubmissionsByLesson
-} from '../controllers/courseController';
-import { authenticateToken } from '../middleware/auth';
-import { isAdmin } from '../middleware/adminAuth';
+} from '../controllers/courseController.js.js';
+import { authenticateToken } from '../middleware/auth.js.js';
+import { isAdmin } from '../middleware/adminAuth.js.js';
 
 const router = Router();
 

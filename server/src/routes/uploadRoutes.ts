@@ -2,8 +2,8 @@ import express from 'express';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
-import { authenticateToken } from '../middleware/auth';
-import { isAdmin } from '../middleware/adminAuth';
+import { authenticateToken } from '../middleware/auth.js.js';
+import { isAdmin } from '../middleware/adminAuth.js.js';
 
 const router = express.Router();
 
