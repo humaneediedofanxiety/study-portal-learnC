@@ -6,7 +6,8 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
-const socket: Socket = io(import.meta.env.VITE_API_URL || 'http://localhost:5000');
+const socketUrl = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? window.location.origin : 'http://localhost:5000');
+const socket: Socket = io(socketUrl);
 
 const Chat: React.FC = () => {
   const { user } = useAuth();

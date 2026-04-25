@@ -21,9 +21,10 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 const httpServer = createServer(app);
+const corsOrigin = process.env.CLIENT_URL || (process.env.NODE_ENV === 'production' ? '*' : "http://localhost:5173");
 const io = new Server(httpServer, {
   cors: {
-    origin: process.env.CLIENT_URL || "http://localhost:5173",
+    origin: corsOrigin,
     methods: ["GET", "POST"]
   }
 });

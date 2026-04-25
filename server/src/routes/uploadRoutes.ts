@@ -35,7 +35,7 @@ router.post('/', authenticateToken, isAdmin, upload.single('file'), (req, res) =
     return res.status(400).json({ message: 'No file uploaded' });
   }
 
-  const apiUrl = process.env.API_URL || `http://localhost:${process.env.PORT || 5000}`;
+  const apiUrl = process.env.API_URL || '';
   const fileUrl = `${apiUrl}/uploads/${req.file.filename}`;
   res.json({ 
     url: fileUrl,
