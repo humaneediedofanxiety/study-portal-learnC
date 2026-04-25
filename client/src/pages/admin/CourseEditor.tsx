@@ -524,14 +524,20 @@ const CourseEditor: React.FC = () => {
                               disabled={uploading}
                               className="rounded-none border border-gray-300 bg-white text-[#005b94] hover:bg-gray-50 h-11 px-5 transition-none"
                             >
-                              {uploading ? <Loader2 className="animate-spin" size={16} /> : <><FileUp size={16} className="mr-2" /> Upload Image</>}
+                              {uploading ? <Loader2 className="animate-spin" size={16} /> : <><FileUp size={16} className="mr-2" /> Local Upload (Temporary)</>}
+                            </Button>
+                            <Button 
+                              onClick={() => window.open('https://archive.org/upload/', '_blank')}
+                              variant="outline"
+                              className="rounded-none border-[#005b94] text-[#005b94] hover:bg-blue-50 h-11 px-5 transition-none"
+                            >
+                              Host on Archive.org (Permanent)
                             </Button>
                           </div>
-                        </div>
-                        <p className="text-[10px] text-gray-400 italic">Recommended dimensions: 1200x800px. Supports PNG, JPG, WEBP.</p>
-                    </div>
-                  </div>
-              </div>
+                          </div>
+                          <p className="text-[10px] text-gray-500 mt-2 italic"><b>Pro Tip:</b> For 2-3GB of resources, upload to <a href="https://archive.org" target="_blank" className="underline">Archive.org</a> and paste the link here. Local uploads will be deleted when the server restarts.</p>
+                          </div>
+                          </div>              </div>
 
               <div className="pt-12 border-t border-gray-100 flex justify-end items-center">
                 <div className="flex items-center gap-4">

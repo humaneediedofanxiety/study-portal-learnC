@@ -235,12 +235,22 @@ const CourseManager: React.FC = () => {
                         onClick={() => fileInputRef.current?.click()}
                         disabled={uploading}
                         className="rounded-none border border-gray-300 bg-white text-[#005b94] hover:bg-gray-50 h-10 px-4 transition-none"
+                        title="Local Upload (Temporary)"
                       >
                         {uploading ? <Loader2 className="animate-spin" size={16} /> : <FileUp size={16} />}
                       </Button>
-                    </div>
-                  </div>
-                </div>
+                      <Button 
+                        type="button"
+                        onClick={() => window.open('https://archive.org/upload/', '_blank')}
+                        variant="outline"
+                        className="rounded-none border-[#005b94] text-[#005b94] hover:bg-blue-50 h-10 px-4 transition-none"
+                        title="Host on Archive.org (Permanent)"
+                      >
+                        Host on Archive
+                      </Button>
+                      </div>
+                      <p className="text-[10px] text-gray-500 mt-1 italic">Use Archive.org for permanent 2-3GB storage.</p>
+                      </div>                </div>
                 <div className="flex gap-4 pt-4">
                   <Button 
                     type="button"

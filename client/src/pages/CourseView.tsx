@@ -151,6 +151,23 @@ const CourseView: React.FC = () => {
 
   const hasAccess = course.hasAccess || user?.role === 'admin';
 
+  // Helper to convert Archive.org detail links to direct download links
+  const getDirectUrl = (url: string) => {
+    if (!url) return '';
+    // If it's already a direct download link, return it
+    if (url.includes('/download/')) return url;
+    
+    // If it's an archive.org details link
+    if (url.includes('archive.org/details/')) {
+      const parts = url.split('/');
+      const identifier = parts[parts.indexOf('details') + 1];
+      // We try to guess the filename or just point to the zip/file directory
+      // Best practice is to use the download link directly, but this helps
+      return url.replace('/details/', '/download/');
+    }
+    return url;
+  };
+
   return (
     <div>
       {/* Classic Blue Course Banner */}
@@ -271,18 +288,18 @@ const CourseView: React.FC = () => {
                                   <span className="text-[11px] font-bold uppercase text-gray-600 tracking-wider flex items-center gap-2">
                                     <FileText size={14} /> Resource Material
                                   </span>
-                                  <a href={activeItem.file_url} target="_blank" rel="noreferrer" className="text-[11px] font-bold text-[#005b94] hover:underline uppercase">
+                                  <a href={getDirectUrl(activeItem.file_url)} target="_blank" rel="noreferrer" className="text-[11px] font-bold text-[#005b94] hover:underline uppercase">
                                     Download
                                   </a>
                                 </div>
 
                                 <div className="border border-gray-200 p-2 bg-gray-50">
-                                  {activeItem.file_url.match(/\.(jpeg|jpg|gif|png|webp)$/i) ? (
-                                    <img src={activeItem.file_url} alt="Resource" className="max-w-full h-auto mx-auto shadow-sm" />
-                                  ) : activeItem.file_url.match(/\.(mp4|webm)$/i) ? (
-                                    <video src={activeItem.file_url} controls className="max-w-full h-auto mx-auto shadow-sm" />
-                                  ) : activeItem.file_url.match(/\.pdf$/i) ? (
-                                    <iframe src={activeItem.file_url} className="w-full h-[600px] border border-gray-300 bg-white" title="Document Preview" />
+                                  {getDirectUrl(activeItem.file_url).match(/\.(jpeg|jpg|gif|png|webp|svg)$/i) ? (
+                                    <img src={getDirectUrl(activeItem.file_url)} alt="Resource" className="max-w-full h-auto mx-auto shadow-sm" />
+                                  ) : getDirectUrl(activeItem.file_url).match(/\.(mp4|webm|ogg)$/i) ? (
+                                    <video src={getDirectUrl(activeItem.file_url)} controls className="max-w-full h-auto mx-auto shadow-sm" />
+                                  ) : getDirectUrl(activeItem.file_url).match(/\.pdf$/i) ? (
+                                    <iframe src={getDirectUrl(activeItem.file_url)} className="w-full h-[600px] border border-gray-300 bg-white" title="Document Preview" />
                                   ) : (
                                     <div className="p-8 text-center text-gray-400 italic text-xs">
                                       Preview not available. Please download to view.
