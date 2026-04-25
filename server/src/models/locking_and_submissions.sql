@@ -12,7 +12,24 @@ CREATE TABLE IF NOT EXISTS lesson_completions (
     UNIQUE(user_id, lesson_id)
 );
 
--- Submissions table linked to lessons (where type = 'assignment')
+-- Submissions table - handle existing table from lms_schema_update.sql
+DO $$ 
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='submissions' AND column_name='lesson_id') THEN
+        ALTER TABLE submissions ADD COLUMN lesson_id INTEGER REFERENCES lessons(id) ON DELETE CASCADE;
+    END IF;
+    
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='submissions' AND column_name='assignment_id') THEN
+        ALTER TABLE submissions ALTER COLUMN assignment_id DROP NOT NULL;
+    END IF;
+
+    -- Add unique constraint if it doesn't exist
+    IF NOT EXISTS (SELECT 1 FROM information_schema.table_constraints WHERE constraint_name='submissions_lesson_id_student_id_key') THEN
+        ALTER TABLE submissions ADD CONSTRAINT submissions_lesson_id_student_id_key UNIQUE(lesson_id, student_id);
+    END IF;
+END $$;
+
+-- Fallback creation if table didn't exist at all (though lms_schema_update should have created it)
 CREATE TABLE IF NOT EXISTS submissions (
     id SERIAL PRIMARY KEY,
     lesson_id INTEGER REFERENCES lessons(id) ON DELETE CASCADE,

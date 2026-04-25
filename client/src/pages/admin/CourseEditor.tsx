@@ -67,12 +67,22 @@ const CourseEditor: React.FC = () => {
   const [loadingSubmissions, setLoadingSubmissions] = useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
+  const [error, setError] = useState<string | null>(null);
+
   const fetchCourse = async () => {
     try {
+      setError(null);
       const response = await api.get(`/courses/${id}`);
       setCourse(response.data);
-    } catch (error) {
-      console.error('Error fetching course:', error);
+    } catch (err: any) {
+      console.error('Error fetching course:', err);
+      if (err.response?.status === 404) {
+        setError('Course registry record not found. It may have been deleted.');
+      } else if (err.response?.status === 401 || err.response?.status === 403) {
+        setError('Unauthorized access to course registry.');
+      } else {
+        setError('Fatal error during registry synchronization.');
+      }
     } finally {
       setLoading(false);
     }
@@ -217,7 +227,21 @@ const CourseEditor: React.FC = () => {
   };
 
   if (loading) return <div className="p-8 font-sans text-sm text-[#005b94] animate-pulse">Initializing course architect...</div>;
-  if (!course) return <div className="p-8">Course registry record not found.</div>;
+  
+  if (error) return (
+    <div className="p-8 max-w-2xl mx-auto text-center space-y-4">
+      <div className="text-[#005b94] font-bold uppercase tracking-widest text-xs">Registry Error</div>
+      <h2 className="text-2xl font-medium text-gray-800 uppercase">{error}</h2>
+      <Button onClick={() => fetchCourse()} variant="outline" className="rounded-none border-gray-300 uppercase font-bold text-[11px] h-11 px-8">Retry Registry Sync</Button>
+      <div className="pt-4">
+        <Link to="/admin/courses" className="text-[#005b94] text-xs font-bold uppercase hover:underline flex items-center justify-center gap-1">
+          <ChevronRight size={12} className="rotate-180" /> Back to Course Manager
+        </Link>
+      </div>
+    </div>
+  );
+
+  if (!course) return <div className="p-8 text-center text-gray-400 font-bold uppercase tracking-widest text-xs">Null Registry Result.</div>;
 
   return (
     <div className="flex flex-col h-[calc(100vh-64px)] -mt-8 -mx-4 lg:-mx-8">

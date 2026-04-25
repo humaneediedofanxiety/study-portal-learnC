@@ -31,8 +31,11 @@ const CourseView: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
+  const [error, setError] = useState<string | null>(null);
+
   const fetchCourse = async () => {
     try {
+      setError(null);
       const response = await api.get(`/courses/${id}`);
       setCourse(response.data);
       if (response.data.sections?.length > 0) {
@@ -42,8 +45,15 @@ const CourseView: React.FC = () => {
           setActiveItem(firstVisibleSection.items[0]);
         }
       }
-    } catch (error) {
-      console.error('Error fetching course:', error);
+    } catch (err: any) {
+      console.error('Error fetching course:', err);
+      if (err.response?.status === 404) {
+        setError('Course not found. Please verify the course ID.');
+      } else if (err.response?.status === 401 || err.response?.status === 403) {
+        setError('Access denied. You may not have permission to view this course.');
+      } else {
+        setError('Failed to load course materials. Please try again later.');
+      }
     } finally {
       setLoading(false);
     }
@@ -122,7 +132,21 @@ const CourseView: React.FC = () => {
   };
 
   if (loading) return <div className="p-8 font-sans text-sm text-[#005b94] animate-pulse">Syncing course materials...</div>;
-  if (!course) return <div className="p-8">Course not found.</div>;
+  
+  if (error) return (
+    <div className="p-8 max-w-2xl mx-auto text-center space-y-4">
+      <div className="text-red-600 font-bold uppercase tracking-widest text-xs">Error Detected</div>
+      <h2 className="text-2xl font-medium text-gray-800">{error}</h2>
+      <Button onClick={() => fetchCourse()} variant="outline" className="rounded-none border-gray-300 uppercase font-bold text-[11px] h-10 px-6">Retry Connection</Button>
+      <div className="pt-4">
+        <Link to="/courses" className="text-[#005b94] text-xs font-bold uppercase hover:underline flex items-center justify-center gap-1">
+          <ChevronRight size={12} className="rotate-180" /> Back to Catalog
+        </Link>
+      </div>
+    </div>
+  );
+
+  if (!course) return <div className="p-8 text-center text-gray-500 uppercase tracking-widest text-xs font-bold">Course record unavailable.</div>;
 
   const hasAccess = course.hasAccess || user?.role === 'admin';
 

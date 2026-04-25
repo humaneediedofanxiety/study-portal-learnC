@@ -48,9 +48,9 @@ console.log(`Using frontend at: ${clientDistPath}`);
 app.use(express.static(clientDistPath));
 
 // Handle SPA routing - deliver index.html for all non-API routes
-app.get('*path', (req, res) => {
+app.get('*', (req, res) => {
   if (req.path.startsWith('/api')) {
-    return res.status(404).send('API endpoint not found');
+    return res.status(404).json({ message: 'API endpoint not found' });
   }
   
   const indexPath = path.join(clientDistPath, 'index.html');

@@ -13,13 +13,15 @@ CREATE TABLE IF NOT EXISTS notes (
 -- Submissions table
 CREATE TABLE IF NOT EXISTS submissions (
     id SERIAL PRIMARY KEY,
-    assignment_id INTEGER NOT NULL REFERENCES assignments(id) ON DELETE CASCADE,
+    assignment_id INTEGER REFERENCES assignments(id) ON DELETE CASCADE,
+    lesson_id INTEGER REFERENCES lessons(id) ON DELETE CASCADE,
     student_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     file_url VARCHAR(500),
     content TEXT, -- For text-based submissions
     grade VARCHAR(50),
     feedback TEXT,
-    submitted_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    submitted_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(lesson_id, student_id)
 );
 
 -- Course Materials (Files associated with courses or lessons)

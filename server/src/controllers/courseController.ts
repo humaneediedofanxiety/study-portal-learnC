@@ -63,16 +63,30 @@ export const getCourseById = async (req: AuthRequest, res: Response) => {
 
     const sections = sectionsResult.rows;
 
-    const contentResult = await query(
-      `SELECT l.*, 
-       (SELECT COUNT(*) FROM lesson_completions lc WHERE lc.lesson_id = l.id AND lc.user_id = $2) > 0 as is_completed,
-       (SELECT row_to_json(s.*) FROM submissions s WHERE s.lesson_id = l.id AND s.student_id = $2) as user_submission
-       FROM lessons l 
-       JOIN course_sections s ON l.section_id = s.id 
-       WHERE s.course_id = $1 
-       ORDER BY l.order_index ASC`,
-      [id, userId]
-    );
+    let contentResult;
+    try {
+      contentResult = await query(
+        `SELECT l.*, 
+         (SELECT COUNT(*) FROM lesson_completions lc WHERE lc.lesson_id = l.id AND lc.user_id = $2) > 0 as is_completed,
+         (SELECT row_to_json(s.*) FROM submissions s WHERE s.lesson_id = l.id AND s.student_id = $2) as user_submission
+         FROM lessons l 
+         JOIN course_sections s ON l.section_id = s.id 
+         WHERE s.course_id = $1 
+         ORDER BY l.order_index ASC`,
+        [id, userId]
+      );
+    } catch (queryError) {
+      console.error('Error fetching course content items:', queryError);
+      // Fallback: Fetch lessons without completion/submission info if the above fails
+      // This helps diagnose if the issue is with lesson_completions or submissions tables
+      contentResult = await query(
+        `SELECT l.* FROM lessons l 
+         JOIN course_sections s ON l.section_id = s.id 
+         WHERE s.course_id = $1 
+         ORDER BY l.order_index ASC`,
+        [id]
+      );
+    }
 
     const sectionsWithContent = sections.map(section => {
       const isLockedForStudent = userRole !== 'admin' && section.is_locked;
