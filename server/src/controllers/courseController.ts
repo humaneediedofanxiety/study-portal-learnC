@@ -35,7 +35,7 @@ export const getCourseById = async (req: AuthRequest, res: Response) => {
   const userId = req.user?.id;
   const userRole = req.user?.role;
 
-  if (isNaN(parseInt(id))) {
+  if (isNaN(parseInt(id as string))) {
     return res.status(400).json({ message: 'Invalid course ID format' });
   }
 
@@ -213,7 +213,7 @@ export const getSubmissionsByLesson = async (req: Request, res: Response) => {
 
 export const deleteSection = async (req: Request, res: Response) => {
   const { id } = req.params;
-  if (isNaN(parseInt(id))) {
+  if (isNaN(parseInt(id as string))) {
     return res.status(400).json({ message: 'Invalid section ID format' });
   }
   try {
@@ -246,7 +246,7 @@ export const updateContentItem = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { title, content, file_url, schedule_config, order_index } = req.body;
 
-  if (isNaN(parseInt(id))) {
+  if (isNaN(parseInt(id as string))) {
     return res.status(400).json({ message: 'Invalid item ID format' });
   }
 
@@ -266,7 +266,7 @@ export const updateContentItem = async (req: Request, res: Response) => {
 
 export const deleteContentItem = async (req: Request, res: Response) => {
   const { id } = req.params;
-  if (isNaN(parseInt(id))) {
+  if (isNaN(parseInt(id as string))) {
     return res.status(400).json({ message: 'Invalid item ID format' });
   }
   try {
@@ -281,7 +281,7 @@ export const deleteContentItem = async (req: Request, res: Response) => {
 
 export const deleteCourse = async (req: Request, res: Response) => {
   const { id } = req.params;
-  if (isNaN(parseInt(id))) {
+  if (isNaN(parseInt(id as string))) {
     return res.status(400).json({ message: 'Invalid course ID format' });
   }
   try {
