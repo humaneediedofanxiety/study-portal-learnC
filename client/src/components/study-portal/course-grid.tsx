@@ -5,7 +5,6 @@ import { Link } from "react-router-dom"
 import { useState, useEffect } from "react"
 import api from "@/services/api"
 import { useAuth } from "@/hooks/useAuth"
-import { getArchiveThumbnailUrl } from "@/lib/utils"
 
 export function CourseGrid() {
   const [courses, setCourses] = useState<any[]>([])
@@ -49,7 +48,7 @@ export function CourseGrid() {
                 {/* Course Thumbnail placeholder/image */}
                 <div className="aspect-video bg-gray-100 flex items-center justify-center border-b border-gray-200 group-hover:bg-[#005b94]/5 transition-colors">
                   {course.thumbnail_url ? (
-                    <img src={getArchiveThumbnailUrl(course.thumbnail_url)} alt={course.title} className="w-full h-full object-cover" />
+                    <img src={course.thumbnail_url} alt={course.title} className="w-full h-full object-cover" />
                   ) : (
                     <GraduationCap className="h-12 w-12 text-gray-300 group-hover:text-[#005b94]/30 transition-colors" />
                   )}

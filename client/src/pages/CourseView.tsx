@@ -17,7 +17,6 @@ import {
   ExternalLink
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { cn, getArchiveDirectUrl, getArchiveThumbnailUrl } from '@/lib/utils';
 
 const CourseView: React.FC = () => {
   const { id } = useParams();
@@ -155,7 +154,28 @@ const CourseView: React.FC = () => {
 
   // Helper to convert Archive.org detail links to direct download links
   const getDirectUrl = (url: string) => {
-    return getArchiveDirectUrl(url);
+    if (!url) return '';
+    
+    // Handle Archive.org specifically
+    if (url.includes('archive.org/')) {
+      // If it's already a direct download or embed link, return it
+      if (url.includes('/download/') || url.includes('/embed/')) return url;
+      
+      // If it's an archive.org details link
+      if (url.includes('/details/')) {
+        const parts = url.split('/');
+        const identifier = parts[parts.indexOf('details') + 1];
+        
+        // If the URL ends with a file extension, convert to download link
+        if (url.match(/\.(pdf|mp4|jpg|png|webp|zip)$/i)) {
+          return url.replace('/details/', '/download/');
+        }
+        
+        // Otherwise, return an embed link for the whole item (best for reader/player)
+        return `https://archive.org/embed/${identifier}`;
+      }
+    }
+    return url;
   };
 
   return (
@@ -374,7 +394,7 @@ const CourseView: React.FC = () => {
             <div className="aspect-[4/3] bg-white border border-gray-300 p-2 shadow-sm">
                <div className="w-full h-full bg-gray-100 flex flex-col items-center justify-center text-gray-300 gap-2">
                   {course.thumbnail_url ? (
-                    <img src={getArchiveThumbnailUrl(course.thumbnail_url)} alt={course.title} className="w-full h-full object-cover" />
+                    <img src={course.thumbnail_url} alt={course.title} className="w-full h-full object-cover" />
                   ) : (
                     <>
                       <FileText size={32} />
