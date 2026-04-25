@@ -9,9 +9,11 @@ services:
       cd client && npm install && npm run build
       # Build server
       cd ../server && npm install && npm run build
-      # Move client dist into server for easier access
+      # Move client dist into server's dist folder
       mkdir -p dist/client
       cp -r ../client/dist/* dist/client/
+      echo "Contents of server/dist:"
+      ls -R dist/
     startCommand: cd server && npm start
     envVars:
       - key: NODE_VERSION

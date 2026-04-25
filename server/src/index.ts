@@ -42,10 +42,23 @@ app.use('/api/upload', uploadRoutes);
 app.use('/api/user', userRoutes);
 
 // Serve static files from the client dist directory
-// In production, we move client/dist to server/dist/client
-const clientDistPath = fs.existsSync(path.join(__dirname, 'client'))
-  ? path.join(__dirname, 'client')
-  : path.join(__dirname, '../../client/dist');
+// Search for the frontend in common locations
+const potentialPaths = [
+  path.join(process.cwd(), 'dist/client'),
+  path.join(process.cwd(), 'client'),
+  path.join(__dirname, 'client'),
+  path.join(__dirname, '../../client/dist'),
+  '/app/server/dist/client'
+];
+
+let clientDistPath = potentialPaths[0];
+for (const p of potentialPaths) {
+  if (fs.existsSync(path.join(p, 'index.html'))) {
+    clientDistPath = p;
+    console.log(`Frontend found at: ${p}`);
+    break;
+  }
+}
 
 app.use(express.static(clientDistPath));
 
@@ -59,7 +72,8 @@ app.get('*path', (req, res) => {
   if (fs.existsSync(indexPath)) {
     res.sendFile(indexPath);
   } else {
-    res.status(404).send(`LMS-AI API is running... (Frontend index.html not found at ${indexPath})`);
+    // Debug info to help identify where it's looking
+    res.status(404).send(`LMS-AI API is running... (Frontend not found. Looked in: ${clientDistPath}. CWD: ${process.cwd()})`);
   }
 });
 
