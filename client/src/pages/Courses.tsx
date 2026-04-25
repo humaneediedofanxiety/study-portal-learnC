@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import { getArchiveThumbnailUrl } from '@/lib/utils';
 
 const Courses: React.FC = () => {
   const [courses, setCourses] = useState<any[]>([]);
@@ -57,7 +58,7 @@ const Courses: React.FC = () => {
                   <div className="aspect-video bg-gray-100 flex items-center justify-center border-b border-border group-hover:bg-primary/5">
                     {course.thumbnail_url ? (
                       <img
-                        src={course.thumbnail_url}
+                        src={getArchiveThumbnailUrl(course.thumbnail_url)}
                         alt={course.title}
                         className="w-full h-full object-cover"
                       />

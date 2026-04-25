@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { getArchiveThumbnailUrl } from '@/lib/utils';
 
 interface ContentItem {
   id: number;
@@ -500,7 +501,7 @@ const CourseEditor: React.FC = () => {
                   <div className="flex flex-col sm:flex-row gap-8">
                     <div className="w-64 h-40 bg-gray-100 border border-gray-200 shrink-0 overflow-hidden flex items-center justify-center">
                        {course.thumbnail_url ? (
-                         <img src={course.thumbnail_url} alt="Thumbnail" className="w-full h-full object-cover" />
+                         <img src={getArchiveThumbnailUrl(course.thumbnail_url)} alt="Thumbnail" className="w-full h-full object-cover" />
                        ) : (
                          <BookOpen size={48} className="text-gray-200" />
                        )}

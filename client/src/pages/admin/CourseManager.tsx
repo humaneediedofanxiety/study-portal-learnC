@@ -5,6 +5,7 @@ import { Plus, Book, Edit2, Trash2, ChevronRight, X, FileUp, Loader2 } from 'luc
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { getArchiveThumbnailUrl } from '@/lib/utils';
 
 interface Course {
   id: number;
@@ -218,7 +219,7 @@ const CourseManager: React.FC = () => {
                   <div className="flex flex-col gap-4">
                     {newCourse.thumbnail_url && (
                       <div className="w-full h-32 bg-gray-100 border border-gray-200 overflow-hidden flex items-center justify-center">
-                        <img src={newCourse.thumbnail_url} alt="Preview" className="w-full h-full object-cover" />
+                        <img src={getArchiveThumbnailUrl(newCourse.thumbnail_url)} alt="Preview" className="w-full h-full object-cover" />
                       </div>
                     )}
                     <div className="flex gap-2">
@@ -277,7 +278,7 @@ const CourseManager: React.FC = () => {
             <Card key={course.id} className="bg-white rounded-none border border-gray-200 overflow-hidden group hover:border-[#005b94] transition-colors shadow-none">
               <div className="h-40 bg-gray-100 border-b border-gray-100 relative group-hover:bg-blue-50 transition-colors flex items-center justify-center">
                 {course.thumbnail_url ? (
-                  <img src={course.thumbnail_url} alt={course.title || 'Course'} className="w-full h-full object-cover" />
+                  <img src={getArchiveThumbnailUrl(course.thumbnail_url)} alt={course.title || 'Course'} className="w-full h-full object-cover" />
                 ) : (
                   <Book size={48} strokeWidth={1} className="text-gray-300" />
                 )}
