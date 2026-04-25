@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { Users, BookOpen, CheckCircle, XCircle, Search, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -30,8 +30,8 @@ const StudentManagement: React.FC = () => {
     const fetchData = async () => {
       try {
         const [usersRes, coursesRes] = await Promise.all([
-          axios.get('http://localhost:5000/api/admin/users', { headers: { Authorization: `Bearer ${token}` } }),
-          axios.get('http://localhost:5000/api/courses', { headers: { Authorization: `Bearer ${token}` } })
+          api.get('/admin/users'),
+          api.get('/courses')
         ]);
         setStudents(usersRes.data.filter((u: User) => u.role === 'student'));
         setCourses(coursesRes.data);
@@ -48,9 +48,7 @@ const StudentManagement: React.FC = () => {
     if (selectedCourse) {
       const fetchEnrollments = async () => {
         try {
-          const res = await axios.get(`http://localhost:5000/api/admin/enrollments/${selectedCourse.id}`, {
-            headers: { Authorization: `Bearer ${token}` }
-          });
+          const res = await api.get(`/admin/enrollments/${selectedCourse.id}`);
           setEnrolledIds(res.data.map((u: User) => u.id));
         } catch (error) {
           console.error('Error fetching enrollments:', error);
@@ -66,11 +64,9 @@ const StudentManagement: React.FC = () => {
     const url = isEnrolled ? 'unenroll' : 'enroll';
     
     try {
-      await axios.post(`http://localhost:5000/api/admin/${url}`, {
+      await api.post(`/admin/${url}`, {
         user_id: studentId,
         course_id: selectedCourse.id
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
       });
       
       setEnrolledIds(prev => 

@@ -3,7 +3,7 @@ import { ExternalLink, Users, ChevronRight, GraduationCap } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
 const Courses: React.FC = () => {
@@ -14,9 +14,7 @@ const Courses: React.FC = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/courses', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        const response = await api.get('/courses');
         setCourses(response.data);
       } catch (error) {
         console.error('Error fetching courses:', error);

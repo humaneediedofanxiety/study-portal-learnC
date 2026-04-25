@@ -3,7 +3,7 @@ import { Clock, Video, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '../context/AuthContext';
-import axios from 'axios';
+import api from '../services/api';
 import { Link } from 'react-router-dom';
 
 const Schedule: React.FC = () => {
@@ -14,9 +14,7 @@ const Schedule: React.FC = () => {
   useEffect(() => {
     const fetchSchedule = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/user/schedule', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        const response = await api.get('/user/schedule');
         setScheduleItems(response.data);
       } catch (error) {
         console.error('Error fetching schedule:', error);

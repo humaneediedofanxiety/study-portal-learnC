@@ -3,7 +3,7 @@ import { ClipboardList, BookOpen, ChevronRight } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
 const Assignments: React.FC = () => {
@@ -14,9 +14,7 @@ const Assignments: React.FC = () => {
   useEffect(() => {
     const fetchAssignments = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/user/assignments', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        const response = await api.get('/user/assignments');
         setAssignments(response.data);
       } catch (error) {
         console.error('Error fetching assignments:', error);

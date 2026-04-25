@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { 
   Lock,
@@ -33,9 +33,7 @@ const CourseView: React.FC = () => {
 
   const fetchCourse = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/courses/${id}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await api.get(`/courses/${id}`);
       setCourse(response.data);
       if (response.data.sections?.length > 0) {
         const firstVisibleSection = response.data.sections.find((s: any) => !s.is_locked || user?.role === 'admin') || response.data.sections[0];
@@ -71,9 +69,7 @@ const CourseView: React.FC = () => {
 
   const handleMarkComplete = async (lessonId: number) => {
     try {
-      await axios.post('http://localhost:5000/api/courses/items/complete', { lessonId }, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await api.post('/courses/items/complete', { lessonId });
       fetchCourse();
     } catch (error) {
       alert('Failed to mark complete');
@@ -83,12 +79,10 @@ const CourseView: React.FC = () => {
   const handleSubmitAssignment = async () => {
     setSubmitting(true);
     try {
-      await axios.post('http://localhost:5000/api/courses/items/submit', {
+      await api.post('/courses/items/submit', {
         lesson_id: activeItem.id,
         content: assignmentContent,
         file_url: assignmentFile
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
       });
       fetchCourse();
       alert('Assignment submitted successfully!');
@@ -108,9 +102,8 @@ const CourseView: React.FC = () => {
 
     setUploading(true);
     try {
-      const response = await axios.post('http://localhost:5000/api/upload', formData, {
+      const response = await api.post('/upload', formData, {
         headers: { 
-          'Authorization': `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
         }
       });

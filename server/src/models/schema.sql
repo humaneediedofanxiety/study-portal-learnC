@@ -48,6 +48,7 @@ CREATE TABLE IF NOT EXISTS messages (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+/*
 -- Forum Comments table
 CREATE TABLE IF NOT EXISTS forum_comments (
     id SERIAL PRIMARY KEY,
@@ -56,6 +57,7 @@ CREATE TABLE IF NOT EXISTS forum_comments (
     content TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+*/
 
 -- Exams table
 CREATE TABLE IF NOT EXISTS exams (

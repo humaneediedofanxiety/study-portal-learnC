@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { Plus, Book, Edit2, Trash2, ChevronRight, X } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
@@ -23,9 +23,7 @@ const CourseManager: React.FC = () => {
 
   const fetchCourses = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/courses', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await api.get('/courses');
       setCourses(response.data);
     } catch (error) {
       console.error('Error fetching courses:', error);
@@ -35,9 +33,7 @@ const CourseManager: React.FC = () => {
   const handleDeleteCourse = async (courseId: number) => {
     if (!confirm('Are you sure you want to delete this course?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/courses/${courseId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await api.delete(`/courses/${courseId}`);
       fetchCourses();
     } catch (error) {
       alert('Failed to delete course');
@@ -51,9 +47,7 @@ const CourseManager: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/courses', newCourse, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await api.post('/courses', newCourse);
       setShowAddForm(false);
       setNewCourse({ title: '', description: '', thumbnail_url: '' });
       fetchCourses();

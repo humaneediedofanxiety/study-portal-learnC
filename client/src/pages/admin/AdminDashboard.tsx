@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Users, BookOpen, GraduationCap, FileCheck, ChevronRight, Layout } from 'lucide-react';
-import axios from 'axios';
+import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { Link } from 'react-router-dom';
 
@@ -19,9 +19,7 @@ const AdminDashboard: React.FC = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/admin/stats', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        const response = await api.get('/admin/stats');
         setStats(response.data);
       } catch (error) {
         console.error('Error fetching stats:', error);

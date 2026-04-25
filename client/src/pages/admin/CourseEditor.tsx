@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { 
   Plus, 
@@ -69,9 +69,7 @@ const CourseEditor: React.FC = () => {
 
   const fetchCourse = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/courses/${id}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await api.get(`/courses/${id}`);
       setCourse(response.data);
     } catch (error) {
       console.error('Error fetching course:', error);
@@ -87,9 +85,7 @@ const CourseEditor: React.FC = () => {
   const fetchSubmissions = async (lessonId: number) => {
     setLoadingSubmissions(true);
     try {
-      const response = await axios.get(`http://localhost:5000/api/courses/items/${lessonId}/submissions`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await api.get(`/courses/items/${lessonId}/submissions`);
       setSubmissions(response.data);
     } catch (error) {
       console.error('Error fetching submissions:', error);
@@ -106,11 +102,9 @@ const CourseEditor: React.FC = () => {
 
   const handleGradeSubmission = async (submissionId: number, grade: string) => {
     try {
-      await axios.put(`http://localhost:5000/api/courses/submissions/${submissionId}/grade`, {
+      await api.put(`/courses/submissions/${submissionId}/grade`, {
         grade,
         feedback: 'Marked by instructor'
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
       });
       if (activeItem) fetchSubmissions(activeItem.id);
       alert('Graded successfully');
@@ -121,10 +115,8 @@ const CourseEditor: React.FC = () => {
 
   const handleToggleSectionLock = async (sectionId: number, currentLockStatus: boolean) => {
     try {
-      await axios.patch(`http://localhost:5000/api/courses/sections/${sectionId}/lock`, {
+      await api.patch(`/courses/sections/${sectionId}/lock`, {
         is_locked: !currentLockStatus
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
       });
       fetchCourse();
     } catch (error) {
@@ -135,13 +127,11 @@ const CourseEditor: React.FC = () => {
   const handleAddSection = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/courses/sections', {
+      await api.post('/courses/sections', {
         course_id: id,
         title: newSectionTitle,
         order_index: course?.sections.length || 0,
         is_locked: true
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
       });
       setNewSectionTitle('');
       setShowSectionForm(false);
@@ -162,9 +152,7 @@ const CourseEditor: React.FC = () => {
         schedule_config: type === 'live' ? { day: 'Sunday', startTime: '16:00', endTime: '17:00' } : null,
         order_index: 0
       };
-      const response = await axios.post('http://localhost:5000/api/courses/items', newItem, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await api.post('/courses/items', newItem);
       await fetchCourse();
       setActiveItem(response.data);
     } catch (error) {
@@ -175,9 +163,7 @@ const CourseEditor: React.FC = () => {
   const handleUpdateItem = async () => {
     if (!activeItem) return;
     try {
-      await axios.put(`http://localhost:5000/api/courses/items/${activeItem.id}`, activeItem, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await api.put(`/courses/items/${activeItem.id}`, activeItem);
       alert('Changes saved to registry.');
       fetchCourse();
     } catch (error) {
@@ -194,9 +180,8 @@ const CourseEditor: React.FC = () => {
 
     setUploading(true);
     try {
-      const response = await axios.post('http://localhost:5000/api/upload', formData, {
+      const response = await api.post('/upload', formData, {
         headers: { 
-          'Authorization': `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
         }
       });
@@ -212,9 +197,7 @@ const CourseEditor: React.FC = () => {
   const handleDeleteItem = async (itemId: number) => {
     if (!confirm('Discard this curriculum item?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/courses/items/${itemId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await api.delete(`/courses/items/${itemId}`);
       fetchCourse();
       setActiveItem(null);
     } catch (error) {
@@ -225,9 +208,7 @@ const CourseEditor: React.FC = () => {
   const handleDeleteSection = async (sectionId: number) => {
     if (!confirm('Purge entire section and all contained items?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/courses/sections/${sectionId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await api.delete(`/courses/sections/${sectionId}`);
       fetchCourse();
       if (activeItem?.section_id === sectionId) setActiveItem(null);
     } catch (error) {

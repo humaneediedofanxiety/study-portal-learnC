@@ -5,10 +5,9 @@
   "main": "index.js",
 "scripts": {
   "start": "node dist/index.js",
-  "build": "tsc || echo 'Build had warnings but continuing...'",
+  "build": "tsc && cp -r src/models dist/ || echo 'Build had warnings but continuing...'",
   "dev": "ts-node-dev --respawn --transpile-only src/index.ts"
-},
-  "keywords": [],
+},  "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "module",

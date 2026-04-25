@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { Trash2, Shield, ChevronRight, UserCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -20,9 +20,7 @@ const UserManager: React.FC = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/admin/users', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await api.get('/admin/users');
       setUsers(response.data);
     } catch (error) {
       console.error('Error fetching users:', error);
@@ -37,9 +35,7 @@ const UserManager: React.FC = () => {
 
   const handleRoleChange = async (userId: number, newRole: string) => {
     try {
-      await axios.put(`http://localhost:5000/api/admin/users/${userId}/role`, { role: newRole }, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await api.put(`/admin/users/${userId}/role`, { role: newRole });
       fetchUsers();
     } catch (error) {
       alert('Failed to update role');
@@ -49,9 +45,7 @@ const UserManager: React.FC = () => {
   const handleDeleteUser = async (userId: number) => {
     if (!confirm('Are you sure you want to delete this user?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/admin/users/${userId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await api.delete(`/admin/users/${userId}`);
       fetchUsers();
     } catch (error) {
       alert('Failed to delete user');

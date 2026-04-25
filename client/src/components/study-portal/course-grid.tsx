@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Link } from "react-router-dom"
 import { useState, useEffect } from "react"
-import axios from "axios"
+import api from "@/services/api"
 import { useAuth } from "@/hooks/useAuth"
 
 export function CourseGrid() {
@@ -14,9 +14,7 @@ export function CourseGrid() {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/courses', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        const response = await api.get('/courses');
         setCourses(response.data);
       } catch (error) {
         console.error('Error fetching dashboard courses:', error);

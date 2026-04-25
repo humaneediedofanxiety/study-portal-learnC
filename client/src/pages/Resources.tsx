@@ -3,19 +3,16 @@ import { FileText, Search, Archive, ChevronRight, Download, ExternalLink } from 
 import { Button } from '@/components/ui/button';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../services/api';
 
 const Resources: React.FC = () => {
   const [resources, setResources] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const { token } = useAuth();
 
   useEffect(() => {
     const fetchResources = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/user/resources', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        const response = await api.get('/user/resources');
         setResources(response.data);
       } catch (error) {
         console.error('Error fetching resources:', error);
@@ -24,7 +21,7 @@ const Resources: React.FC = () => {
       }
     };
     fetchResources();
-  }, [token]);
+  }, []);
 
   if (loading) return <div className="p-8 font-sans text-sm text-[#005b94] animate-pulse">Scanning resource vaults...</div>;
 

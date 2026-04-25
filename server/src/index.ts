@@ -46,6 +46,22 @@ app.get('/', (req, res) => {
 
 const initDB = async () => {
   try {
+    const schemaFiles = [
+      'schema.sql',
+      'lms_schema_update.sql',
+      'locking_and_submissions.sql'
+    ];
+
+    for (const file of schemaFiles) {
+      const filePath = path.join(__dirname, 'models', file);
+      if (fs.existsSync(filePath)) {
+        const sql = fs.readFileSync(filePath, 'utf8');
+        await query(sql);
+        console.log(`Executed schema file: ${file}`);
+      }
+    }
+    
+    // Additional migrations
     await query('ALTER TABLE course_sections ADD COLUMN IF NOT EXISTS is_locked BOOLEAN DEFAULT true');
     console.log('Database initialized successfully');
   } catch (error) {

@@ -3,7 +3,7 @@ import { Award, ChevronRight, ShieldAlert } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '../context/AuthContext';
-import axios from 'axios';
+import api from '../services/api';
 import { Link } from 'react-router-dom';
 
 const Exams: React.FC = () => {
@@ -14,9 +14,7 @@ const Exams: React.FC = () => {
   useEffect(() => {
     const fetchExams = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/user/exams', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        const response = await api.get('/user/exams');
         setExams(response.data);
       } catch (error) {
         console.error('Error fetching exams:', error);
