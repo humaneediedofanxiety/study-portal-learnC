@@ -168,11 +168,14 @@ const CourseEditor: React.FC = () => {
         schedule_config: type === 'live' ? { day: 'Sunday', startTime: '16:00', endTime: '17:00' } : null,
         order_index: 0
       };
+      console.log('Adding item to section:', sectionId, newItem);
       const response = await api.post('/courses/items', newItem);
       await fetchCourse();
       setActiveItem(response.data);
-    } catch (error) {
-      alert('Failed to add item');
+    } catch (error: any) {
+      console.error('Add item error details:', error.response?.data || error);
+      const msg = error.response?.data?.message || error.message;
+      alert(`Failed to add item: ${msg}`);
     }
   };
 
