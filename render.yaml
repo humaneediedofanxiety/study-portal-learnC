@@ -1,12 +1,15 @@
 services:
-  # Server Service
+  # Unified Web Service (Server + Client)
   - type: web
-    name: lms-ai-api
+    name: lms-ai
     env: node
     plan: free
-    rootDir: server
-    buildCommand: npm install && npm run build
-    startCommand: npm start
+    buildCommand: |
+      # Build client
+      cd client && npm install && npm run build
+      # Build server
+      cd ../server && npm install && npm run build
+    startCommand: cd server && npm start
     envVars:
       - key: NODE_VERSION
         value: 20.0.0
@@ -16,37 +19,12 @@ services:
         fromDatabase:
           name: lms-ai-db
           property: connectionString
-      - key: CLIENT_URL
-        fromService:
-          type: static_site
-          name: lms-ai-client
-          property: url
-      - key: API_URL
-        fromService:
-          type: web
-          name: lms-ai-api
-          property: url
       - key: JWT_SECRET
         generateValue: true
-
-  # Client Service
-  - type: static_site
-    name: lms-ai-client
-    env: static
-    plan: free
-    rootDir: client
-    buildCommand: npm install && npm run build
-    publishDir: dist
-    envVars:
       - key: VITE_API_URL
-        fromService:
-          type: web
-          name: lms-ai-api
-          property: url
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
+        value: "" # Empty means it will use relative paths in the same domain
+      - key: API_URL
+        value: "" # Will default to localhost/port internally or the assigned domain
 
 databases:
   - name: lms-ai-db

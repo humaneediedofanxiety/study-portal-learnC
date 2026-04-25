@@ -40,8 +40,21 @@ app.use('/api/assignments', assignmentRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/user', userRoutes);
 
-app.get('/', (req, res) => {
-  res.send('LMS-AI API is running...');
+// Serve static files from the client dist directory
+const clientDistPath = path.join(__dirname, '../../client/dist');
+app.use(express.static(clientDistPath));
+
+// Handle SPA routing - deliver index.html for all non-API routes
+app.get('*', (req, res) => {
+  if (req.path.startsWith('/api')) {
+    return res.status(404).send('API endpoint not found');
+  }
+  const indexPath = path.join(clientDistPath, 'index.html');
+  if (fs.existsSync(indexPath)) {
+    res.sendFile(indexPath);
+  } else {
+    res.send('LMS-AI API is running... (Frontend not built yet)');
+  }
 });
 
 const initDB = async () => {
