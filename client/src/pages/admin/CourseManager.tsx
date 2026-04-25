@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
-import { Plus, Book, Edit2, Trash2, ChevronRight, X } from 'lucide-react';
+import { Plus, Book, Edit2, Trash2, ChevronRight, X, FileUp, Loader2 } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
