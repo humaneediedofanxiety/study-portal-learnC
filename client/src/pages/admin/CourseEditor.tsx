@@ -76,12 +76,13 @@ const CourseEditor: React.FC = () => {
       setCourse(response.data);
     } catch (err: any) {
       console.error('Error fetching course:', err);
+      const serverMessage = err.response?.data?.message;
       if (err.response?.status === 404) {
         setError('Course registry record not found. It may have been deleted.');
       } else if (err.response?.status === 401 || err.response?.status === 403) {
         setError('Unauthorized access to course registry.');
       } else {
-        setError('Fatal error during registry synchronization.');
+        setError(serverMessage || 'Fatal error during registry synchronization.');
       }
     } finally {
       setLoading(false);

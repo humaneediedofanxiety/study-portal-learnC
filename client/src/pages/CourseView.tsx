@@ -47,12 +47,13 @@ const CourseView: React.FC = () => {
       }
     } catch (err: any) {
       console.error('Error fetching course:', err);
+      const serverMessage = err.response?.data?.message;
       if (err.response?.status === 404) {
         setError('Course not found. Please verify the course ID.');
       } else if (err.response?.status === 401 || err.response?.status === 403) {
         setError('Access denied. You may not have permission to view this course.');
       } else {
-        setError('Failed to load course materials. Please try again later.');
+        setError(serverMessage || 'Failed to load course materials. Please try again later.');
       }
     } finally {
       setLoading(false);

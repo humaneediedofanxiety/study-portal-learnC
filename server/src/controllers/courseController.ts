@@ -34,13 +34,14 @@ export const getCourseById = async (req: AuthRequest, res: Response) => {
   const { id } = req.params;
   const userId = req.user?.id;
   const userRole = req.user?.role;
+  const courseId = parseInt(id as string);
 
-  if (isNaN(parseInt(id as string))) {
+  if (isNaN(courseId)) {
     return res.status(400).json({ message: 'Invalid course ID format' });
   }
 
   try {
-    const courseResult = await query('SELECT * FROM courses WHERE id = $1', [id]);
+    const courseResult = await query('SELECT * FROM courses WHERE id = $1', [courseId]);
     if (courseResult.rows.length === 0) {
       return res.status(404).json({ message: 'Course not found' });
     }
@@ -50,7 +51,7 @@ export const getCourseById = async (req: AuthRequest, res: Response) => {
     if (userRole === 'admin') {
       hasAccess = true;
     } else {
-      const enrollment = await query('SELECT * FROM enrollments WHERE user_id = $1 AND course_id = $2', [userId, id]);
+      const enrollment = await query('SELECT * FROM enrollments WHERE user_id = $1 AND course_id = $2', [userId, courseId]);
       if (enrollment.rows.length > 0) {
         hasAccess = true;
       }
@@ -58,7 +59,7 @@ export const getCourseById = async (req: AuthRequest, res: Response) => {
 
     const sectionsResult = await query(
       'SELECT * FROM course_sections WHERE course_id = $1 ORDER BY order_index ASC',
-      [id]
+      [courseId]
     );
 
     const sections = sectionsResult.rows;
@@ -73,18 +74,16 @@ export const getCourseById = async (req: AuthRequest, res: Response) => {
          JOIN course_sections s ON l.section_id = s.id 
          WHERE s.course_id = $1 
          ORDER BY l.order_index ASC`,
-        [id, userId]
+        [courseId, userId]
       );
-    } catch (queryError) {
+    } catch (queryError: any) {
       console.error('Error fetching course content items:', queryError);
       // Fallback: Fetch lessons without completion/submission info if the above fails
-      // This helps diagnose if the issue is with lesson_completions or submissions tables
       contentResult = await query(
         `SELECT l.* FROM lessons l 
-         JOIN course_sections s ON l.section_id = s.id 
-         WHERE s.course_id = $1 
+         WHERE l.course_id = $1 
          ORDER BY l.order_index ASC`,
-        [id]
+        [courseId]
       );
     }
 
@@ -94,13 +93,12 @@ export const getCourseById = async (req: AuthRequest, res: Response) => {
       
       const items = allItems.map(item => {
         if (isLockedForStudent) {
-          // Return restricted version of the item
           return {
             id: item.id,
             section_id: item.section_id,
             title: item.title,
             type: item.type,
-            is_locked: true, // Signal to frontend that content is locked
+            is_locked: true,
             order_index: item.order_index
           };
         }
@@ -119,9 +117,9 @@ export const getCourseById = async (req: AuthRequest, res: Response) => {
       hasAccess,
       sections: sectionsWithContent
     });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Error fetching course details' });
+  } catch (error: any) {
+    console.error('getCourseById Error:', error);
+    res.status(500).json({ message: `Error fetching course details: ${error.message}` });
   }
 };
 
