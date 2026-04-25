@@ -300,7 +300,7 @@ const CourseView: React.FC = () => {
                                   </span>
                                   <div className="flex gap-4">
                                     <a href={getDirectUrl(activeItem.file_url)} target="_blank" rel="noreferrer" className="text-[11px] font-bold text-[#005b94] hover:underline uppercase flex items-center gap-1">
-                                      <ExternalLink size={12} /> Open in New Tab
+                                      <ExternalLink size={12} /> Open
                                     </a>
                                     <a href={getDirectUrl(activeItem.file_url)} target="_blank" rel="noreferrer" className="text-[11px] font-bold text-[#005b94] hover:underline uppercase">
                                       Download
