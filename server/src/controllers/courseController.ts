@@ -259,15 +259,27 @@ export const deleteSection = async (req: Request, res: Response) => {
 // Content Item Management
 export const addContentItem = async (req: Request, res: Response) => {
   const { section_id, title, type, content, file_url, schedule_config, order_index } = req.body;
+  
+  if (!section_id) {
+    return res.status(400).json({ message: 'Section ID is required' });
+  }
+
   try {
+    // Lookup course_id from section
+    const sectionResult = await query('SELECT course_id FROM course_sections WHERE id = $1', [section_id]);
+    if (sectionResult.rows.length === 0) {
+      return res.status(404).json({ message: 'Section not found' });
+    }
+    const course_id = sectionResult.rows[0].course_id;
+
     const result = await query(
-      `INSERT INTO lessons (section_id, title, type, content, file_url, schedule_config, order_index) 
-       VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
-      [section_id, title, type, content, file_url, schedule_config, order_index || 0]
+      `INSERT INTO lessons (course_id, section_id, title, type, content, file_url, schedule_config, order_index) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
+      [course_id, section_id, title, type, content, file_url, schedule_config, order_index || 0]
     );
     res.status(201).json(result.rows[0]);
   } catch (error) {
-    console.error(error);
+    console.error('addContentItem Error:', error);
     res.status(500).json({ message: 'Error adding content item' });
   }
 };

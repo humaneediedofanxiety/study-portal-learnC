@@ -12,6 +12,8 @@ interface Course {
   description: string;
   instructor_name: string;
   thumbnail_url: string;
+  education_level?: string;
+  department?: string;
 }
 
 const CourseManager: React.FC = () => {
@@ -35,18 +37,19 @@ const CourseManager: React.FC = () => {
   const fetchCourses = async () => {
     setLoading(true);
     try {
+      console.log('Fetching courses from registry...');
       const response = await api.get('/courses');
-      setCourses(Array.isArray(response.data) ? response.data : []);
+      const data = Array.isArray(response.data) ? response.data : [];
+      console.log(`Successfully fetched ${data.length} courses.`);
+      setCourses(data);
       setError(null);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching courses:', error);
-      setError('Failed to load courses.');
+      setError(`Connection Error: ${error.message || 'Registry unavailable'}`);
     } finally {
       setLoading(false);
     }
   };
-
-  // ... (handleThumbnailUpload and handleDeleteCourse remain the same)
 
   useEffect(() => {
     fetchCourses();
@@ -55,7 +58,9 @@ const CourseManager: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await api.post('/courses', newCourse);
+      console.log('Committing new course to registry...', newCourse);
+      const response = await api.post('/courses', newCourse);
+      console.log('Course registered successfully:', response.data);
       setShowAddForm(false);
       setNewCourse({ 
         title: '', 
@@ -65,10 +70,10 @@ const CourseManager: React.FC = () => {
         instructor_name: '',
         department: ''
       });
-      fetchCourses();
-    } catch (error) {
+      await fetchCourses();
+    } catch (error: any) {
       console.error('Submission error:', error);
-      alert('Failed to create course. Please check all fields.');
+      alert(`Registration Failed: ${error.response?.data?.message || error.message}`);
     }
   };
 
@@ -177,23 +182,30 @@ const CourseManager: React.FC = () => {
                 </div>
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Graphic Asset (URL or Upload)</label>
-                  <div className="flex gap-2">
-                    <input 
-                      type="text" 
-                      value={newCourse.thumbnail_url}
-                      onChange={(e) => setNewCourse({...newCourse, thumbnail_url: e.target.value})}
-                      className="flex-1 border border-gray-300 rounded-none px-4 py-2.5 text-sm focus:border-[#005b94] outline-none bg-gray-50/30"
-                      placeholder="https://archive.learnc.edu/img.jpg"
-                    />
-                    <input type="file" className="hidden" ref={fileInputRef} onChange={handleThumbnailUpload} accept="image/*" />
-                    <Button 
-                      type="button"
-                      onClick={() => fileInputRef.current?.click()}
-                      disabled={uploading}
-                      className="rounded-none border border-gray-300 bg-white text-[#005b94] hover:bg-gray-50 h-10 px-4 transition-none"
-                    >
-                      {uploading ? <Loader2 className="animate-spin" size={16} /> : <FileUp size={16} />}
-                    </Button>
+                  <div className="flex flex-col gap-4">
+                    {newCourse.thumbnail_url && (
+                      <div className="w-full h-32 bg-gray-100 border border-gray-200 overflow-hidden flex items-center justify-center">
+                        <img src={newCourse.thumbnail_url} alt="Preview" className="w-full h-full object-cover" />
+                      </div>
+                    )}
+                    <div className="flex gap-2">
+                      <input 
+                        type="text" 
+                        value={newCourse.thumbnail_url}
+                        onChange={(e) => setNewCourse({...newCourse, thumbnail_url: e.target.value})}
+                        className="flex-1 border border-gray-300 rounded-none px-4 py-2.5 text-sm focus:border-[#005b94] outline-none bg-gray-50/30"
+                        placeholder="https://archive.learnc.edu/img.jpg"
+                      />
+                      <input type="file" className="hidden" ref={fileInputRef} onChange={handleThumbnailUpload} accept="image/*" />
+                      <Button 
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={uploading}
+                        className="rounded-none border border-gray-300 bg-white text-[#005b94] hover:bg-gray-50 h-10 px-4 transition-none"
+                      >
+                        {uploading ? <Loader2 className="animate-spin" size={16} /> : <FileUp size={16} />}
+                      </Button>
+                    </div>
                   </div>
                 </div>
                 <div className="flex gap-4 pt-4">
