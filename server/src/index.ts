@@ -83,14 +83,20 @@ const initDB = async () => {
       if (fs.existsSync(filePath)) {
         console.log(`Loading schema file: ${file}`);
         const sql = fs.readFileSync(filePath, 'utf8');
-        const statements = sql.split(';').filter(stmt => stmt.trim() !== '');
+        
+        // Use a more robust split that doesn't break on semicolons inside $$ blocks
+        const statements = sql.split(/;(?=(?:[^$]*\$\$[^$]*\$\$)*[^$]*$)/).filter(stmt => stmt.trim() !== '');
+        
         for (let i = 0; i < statements.length; i++) {
           try {
-            await query(statements[i]);
+            const statement = statements[i].trim();
+            if (statement) {
+              await query(statement);
+            }
           } catch (err: any) {
-            // Ignore errors for ADD COLUMN if it already exists as we don't have IF NOT EXISTS for all PG versions
-            if (!err.message.includes('already exists')) {
-              console.warn(`Error in statement ${i} of ${file}:`, err.message);
+            // Ignore common "already exists" errors during migrations
+            if (!err.message.includes('already exists') && !err.message.includes('already a column')) {
+              console.warn(`Migration notice in ${file} (stmt ${i}):`, err.message);
             }
           }
         }

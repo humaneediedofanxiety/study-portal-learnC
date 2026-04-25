@@ -278,9 +278,9 @@ export const addContentItem = async (req: Request, res: Response) => {
       [course_id, section_id, title, type, content, file_url, schedule_config, order_index || 0]
     );
     res.status(201).json(result.rows[0]);
-  } catch (error) {
+  } catch (error: any) {
     console.error('addContentItem Error:', error);
-    res.status(500).json({ message: 'Error adding content item' });
+    res.status(500).json({ message: `Error adding curriculum item: ${error.message}` });
   }
 };
 
