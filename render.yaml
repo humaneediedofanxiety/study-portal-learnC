@@ -9,6 +9,9 @@ services:
       cd client && npm install && npm run build
       # Build server
       cd ../server && npm install && npm run build
+      # Move client dist into server for easier access
+      mkdir -p dist/client
+      cp -r ../client/dist/* dist/client/
     startCommand: cd server && npm start
     envVars:
       - key: NODE_VERSION
@@ -22,9 +25,9 @@ services:
       - key: JWT_SECRET
         generateValue: true
       - key: VITE_API_URL
-        value: "" # Empty means it will use relative paths in the same domain
+        value: ""
       - key: API_URL
-        value: "" # Will default to localhost/port internally or the assigned domain
+        value: ""
 
 databases:
   - name: lms-ai-db
