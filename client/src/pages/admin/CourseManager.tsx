@@ -51,6 +51,39 @@ const CourseManager: React.FC = () => {
     }
   };
 
+  const handleThumbnailUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    setUploading(true);
+    try {
+      const response = await api.post('/upload', formData, {
+        headers: { 
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      setNewCourse(prev => ({ ...prev, thumbnail_url: response.data.url }));
+    } catch (error) {
+      console.error('Thumbnail upload failed:', error);
+      alert('Thumbnail upload failed');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleDeleteCourse = async (courseId: number) => {
+    if (!confirm('Are you sure you want to delete this course?')) return;
+    try {
+      await api.delete(`/courses/${courseId}`);
+      await fetchCourses();
+    } catch (error) {
+      alert('Failed to delete course');
+    }
+  };
+
   useEffect(() => {
     fetchCourses();
   }, [token]);
