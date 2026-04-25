@@ -297,9 +297,14 @@ const CourseView: React.FC = () => {
                                   <span className="text-[11px] font-bold uppercase text-gray-600 tracking-wider flex items-center gap-2">
                                     <FileText size={14} /> Resource Material
                                   </span>
-                                  <a href={getDirectUrl(activeItem.file_url)} target="_blank" rel="noreferrer" className="text-[11px] font-bold text-[#005b94] hover:underline uppercase">
-                                    Download
-                                  </a>
+                                  <div className="flex gap-4">
+                                    <a href={getDirectUrl(activeItem.file_url)} target="_blank" rel="noreferrer" className="text-[11px] font-bold text-[#005b94] hover:underline uppercase flex items-center gap-1">
+                                      <ExternalLink size={12} /> Open in New Tab
+                                    </a>
+                                    <a href={getDirectUrl(activeItem.file_url)} target="_blank" rel="noreferrer" className="text-[11px] font-bold text-[#005b94] hover:underline uppercase">
+                                      Download
+                                    </a>
+                                  </div>
                                 </div>
 
                                 <div className="border border-gray-200 p-2 bg-gray-50">
