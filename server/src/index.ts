@@ -85,8 +85,6 @@ const initDB = async () => {
       }
     }
     
-    // Additional migrations
-    await query('ALTER TABLE course_sections ADD COLUMN IF NOT EXISTS is_locked BOOLEAN DEFAULT true');
     console.log('Database initialized successfully');
   } catch (error) {
     console.error('Database initialization failed:', error);

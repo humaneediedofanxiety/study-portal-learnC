@@ -18,6 +18,31 @@ CREATE TABLE IF NOT EXISTS courses (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Course Sections table
+CREATE TABLE IF NOT EXISTS course_sections (
+    id SERIAL PRIMARY KEY,
+    course_id INTEGER REFERENCES courses(id) ON DELETE CASCADE,
+    title VARCHAR(255) NOT NULL,
+    order_index INTEGER DEFAULT 0,
+    is_locked BOOLEAN DEFAULT true,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Lessons table
+CREATE TABLE IF NOT EXISTS lessons (
+    id SERIAL PRIMARY KEY,
+    course_id INTEGER NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
+    section_id INTEGER REFERENCES course_sections(id) ON DELETE CASCADE,
+    title VARCHAR(255) NOT NULL,
+    type VARCHAR(50) DEFAULT 'lecture', -- lecture, assignment, exam, etc.
+    content TEXT,
+    video_url VARCHAR(255),
+    file_url VARCHAR(500),
+    order_index INTEGER DEFAULT 0,
+    schedule_config JSONB,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Enrollments table
 CREATE TABLE IF NOT EXISTS enrollments (
     id SERIAL PRIMARY KEY,
