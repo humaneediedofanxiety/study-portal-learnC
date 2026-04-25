@@ -230,11 +230,11 @@ const CourseManager: React.FC = () => {
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {courses.map((course) => (
+          {courses.filter(c => c && c.id).map((course) => (
             <Card key={course.id} className="bg-white rounded-none border border-gray-200 overflow-hidden group hover:border-[#005b94] transition-colors shadow-none">
               <div className="h-40 bg-gray-100 border-b border-gray-100 relative group-hover:bg-blue-50 transition-colors flex items-center justify-center">
                 {course.thumbnail_url ? (
-                  <img src={course.thumbnail_url} alt={course.title} className="w-full h-full object-cover" />
+                  <img src={course.thumbnail_url} alt={course.title || 'Course'} className="w-full h-full object-cover" />
                 ) : (
                   <Book size={48} strokeWidth={1} className="text-gray-300" />
                 )}
@@ -261,10 +261,10 @@ const CourseManager: React.FC = () => {
                    </div>
                    <span className="text-[9px] font-bold uppercase text-[#005b94] tracking-widest border border-[#005b94]/20 px-1.5 py-0.5 bg-blue-50/50">Active</span>
                 </div>
-                <h3 className="font-bold text-lg text-gray-800 leading-tight group-hover:text-[#005b94] transition-colors">{course.title}</h3>
-                <p className="text-[11px] text-gray-500 line-clamp-2 italic leading-relaxed">{course.description}</p>
+                <h3 className="font-bold text-lg text-gray-800 leading-tight group-hover:text-[#005b94] transition-colors">{course.title || 'Untitled Module'}</h3>
+                <p className="text-[11px] text-gray-500 line-clamp-2 italic leading-relaxed">{course.description || 'No description provided.'}</p>
                 <div className="pt-3 border-t border-gray-50 flex items-center justify-between">
-                   <span className="text-[10px] font-bold text-gray-400 uppercase">Prof. {course.instructor_name || 'Mahmudul Hasan'}</span>
+                   <span className="text-[10px] font-bold text-gray-400 uppercase">Prof. {course.instructor_name || 'Staff'}</span>
                    <Link to={`/courses/${course.id}`} className="text-[10px] font-bold text-[#005b94] uppercase hover:underline">View Live</Link>
                 </div>
               </div>
