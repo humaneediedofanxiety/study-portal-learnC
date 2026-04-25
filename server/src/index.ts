@@ -42,15 +42,21 @@ app.use('/api/upload', uploadRoutes);
 app.use('/api/user', userRoutes);
 
 // Serve static files from the client dist directory
-const clientDistPath = path.resolve(__dirname, 'client');
-console.log(`Checking for frontend at: ${clientDistPath}`);
+const potentialPaths = [
+  path.resolve(__dirname, 'client'),
+  path.resolve(process.cwd(), 'dist/client'),
+  path.resolve(process.cwd(), '../client/dist'), // Sibling fallback
+];
 
-if (fs.existsSync(path.join(clientDistPath, 'index.html'))) {
-  console.log('Frontend index.html found!');
-} else {
-  console.warn('Frontend index.html NOT found at startup path.');
+let clientDistPath = potentialPaths[0];
+for (const p of potentialPaths) {
+  if (fs.existsSync(path.join(p, 'index.html'))) {
+    clientDistPath = p;
+    break;
+  }
 }
 
+console.log(`Using frontend at: ${clientDistPath}`);
 app.use(express.static(clientDistPath));
 
 // Handle SPA routing - deliver index.html for all non-API routes
