@@ -42,20 +42,7 @@ app.use('/api/upload', uploadRoutes);
 app.use('/api/user', userRoutes);
 
 // Serve static files from the client dist directory
-const potentialPaths = [
-  path.resolve(__dirname, 'client'),
-  path.resolve(process.cwd(), 'dist/client'),
-  path.resolve(process.cwd(), '../client/dist'), // Sibling fallback
-];
-
-let clientDistPath = potentialPaths[0];
-for (const p of potentialPaths) {
-  if (fs.existsSync(path.join(p, 'index.html'))) {
-    clientDistPath = p;
-    break;
-  }
-}
-
+const clientDistPath = path.join(__dirname, 'client');
 console.log(`Using frontend at: ${clientDistPath}`);
 app.use(express.static(clientDistPath));
 
