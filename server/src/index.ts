@@ -74,7 +74,8 @@ const initDB = async () => {
     const schemaFiles = [
       'schema.sql',
       'lms_schema_update.sql',
-      'locking_and_submissions.sql'
+      'locking_and_submissions.sql',
+      'course_schema_upgrade.sql'
     ];
 
     for (const file of schemaFiles) {

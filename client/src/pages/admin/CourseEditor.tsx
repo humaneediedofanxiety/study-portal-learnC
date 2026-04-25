@@ -50,6 +50,9 @@ interface Course {
   title: string;
   description: string;
   thumbnail_url: string;
+  education_level?: string;
+  instructor_name?: string;
+  department?: string;
   sections: Section[];
 }
 
@@ -60,12 +63,14 @@ const CourseEditor: React.FC = () => {
   const [course, setCourse] = useState<Course | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeItem, setActiveItem] = useState<ContentItem | null>(null);
+  const [isEditingCourse, setIsEditingCourse] = useState(false);
   const [showSectionForm, setShowSectionForm] = useState(false);
   const [newSectionTitle, setNewSectionTitle] = useState('');
   const [uploading, setUploading] = useState(false);
   const [submissions, setSubmissions] = useState<any[]>([]);
   const [loadingSubmissions, setLoadingSubmissions] = useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const thumbnailInputRef = React.useRef<HTMLInputElement>(null);
 
   const [error, setError] = useState<string | null>(null);
 
@@ -168,6 +173,40 @@ const CourseEditor: React.FC = () => {
       setActiveItem(response.data);
     } catch (error) {
       alert('Failed to add item');
+    }
+  };
+
+  const handleUpdateCourse = async () => {
+    if (!course) return;
+    try {
+      await api.put(`/courses/${id}`, course);
+      alert('Course metadata updated.');
+      fetchCourse();
+    } catch (error) {
+      alert('Failed to update course.');
+    }
+  };
+
+  const handleThumbnailUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !course) return;
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    setUploading(true);
+    try {
+      const response = await api.post('/upload', formData, {
+        headers: { 
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      setCourse({ ...course, thumbnail_url: response.data.url });
+    } catch (error) {
+      console.error('Thumbnail upload failed:', error);
+      alert('Thumbnail upload failed');
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -280,6 +319,26 @@ const CourseEditor: React.FC = () => {
         {/* Left Sidebar: Curriculum Structure */}
         <div className="w-80 border-r border-gray-200 bg-white overflow-y-auto shrink-0 shadow-sm">
           <div className="p-6 space-y-8">
+            <div className="space-y-4">
+              <div className="border-b border-gray-100 pb-2">
+                <span className="text-[10px] font-bold uppercase text-gray-400 tracking-widest">General Configuration</span>
+              </div>
+              <button
+                onClick={() => {
+                  setIsEditingCourse(true);
+                  setActiveItem(null);
+                }}
+                className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-none border-l-4 ${
+                  isEditingCourse 
+                    ? 'bg-blue-50 border-l-[#005b94] text-[#005b94] font-bold' 
+                    : 'border-l-transparent text-gray-500 hover:bg-gray-50 hover:text-gray-800'
+                }`}
+              >
+                <BookOpen size={14} className="shrink-0" />
+                <span className="text-[11px] uppercase font-bold">Course Registry Settings</span>
+              </button>
+            </div>
+
             <div className="border-b border-gray-100 pb-2 flex items-center justify-between">
                <span className="text-[10px] font-bold uppercase text-gray-400 tracking-widest">Syllabus Explorer</span>
             </div>
@@ -310,7 +369,10 @@ const CourseEditor: React.FC = () => {
                   {section.items.map((item) => (
                     <button
                       key={item.id}
-                      onClick={() => setActiveItem(item)}
+                      onClick={() => {
+                        setActiveItem(item);
+                        setIsEditingCourse(false);
+                      }}
                       className={`w-full flex items-center gap-3 px-4 py-2 text-left transition-none border-l-4 ${
                         activeItem?.id === item.id 
                           ? 'bg-blue-50 border-l-[#005b94] text-[#005b94] font-bold' 
@@ -366,7 +428,121 @@ const CourseEditor: React.FC = () => {
 
         {/* Main Content Area: Item Editor */}
         <div className="flex-1 bg-white overflow-y-auto p-12">
-          {activeItem ? (
+          {isEditingCourse ? (
+            <div className="max-w-4xl mx-auto space-y-12">
+              <div className="flex flex-col gap-4">
+                <div className="flex items-center gap-2">
+                   <span className="bg-[#333] text-white px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest">Master Registry</span>
+                   <span className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">REF_ID: {course.id}</span>
+                </div>
+                <input 
+                  type="text"
+                  value={course.title}
+                  onChange={(e) => setCourse({...course, title: e.target.value})}
+                  className="w-full text-4xl font-bold text-gray-800 uppercase tracking-tight border-b border-transparent focus:border-gray-200 outline-none pb-2 transition-colors"
+                  placeholder="Course Title..."
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold uppercase text-gray-400 tracking-widest">Education Level</label>
+                  <input 
+                    type="text"
+                    value={course.education_level || ''}
+                    onChange={(e) => setCourse({...course, education_level: e.target.value})}
+                    className="w-full border border-gray-300 rounded-none p-3 text-xs outline-none focus:border-[#005b94] bg-gray-50/30"
+                    placeholder="e.g., Undergraduate, Professional"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold uppercase text-gray-400 tracking-widest">Primary Instructor</label>
+                  <input 
+                    type="text"
+                    value={course.instructor_name || ''}
+                    onChange={(e) => setCourse({...course, instructor_name: e.target.value})}
+                    className="w-full border border-gray-300 rounded-none p-3 text-xs outline-none focus:border-[#005b94] bg-gray-50/30"
+                    placeholder="Instructor Name"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold uppercase text-gray-400 tracking-widest">Department</label>
+                  <input 
+                    type="text"
+                    value={course.department || ''}
+                    onChange={(e) => setCourse({...course, department: e.target.value})}
+                    className="w-full border border-gray-300 rounded-none p-3 text-xs outline-none focus:border-[#005b94] bg-gray-50/30"
+                    placeholder="e.g., Computer Science"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-6">
+                 <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold uppercase text-gray-400 tracking-widest">Curriculum Summary</label>
+                    <textarea 
+                      value={course.description || ''}
+                      onChange={(e) => setCourse({...course, description: e.target.value})}
+                      className="w-full h-40 border border-gray-300 rounded-none p-6 text-sm font-sans outline-none focus:border-[#005b94] bg-white leading-relaxed"
+                      placeholder="Provide a detailed description of the course..."
+                    />
+                  </div>
+              </div>
+
+              <div className="space-y-6">
+                  <div className="border-b border-gray-100 pb-2">
+                     <span className="text-[10px] font-bold uppercase text-gray-400 tracking-widest">Visual Identity (Thumbnail)</span>
+                  </div>
+                  
+                  <div className="flex flex-col sm:flex-row gap-8">
+                    <div className="w-64 h-40 bg-gray-100 border border-gray-200 shrink-0 overflow-hidden flex items-center justify-center">
+                       {course.thumbnail_url ? (
+                         <img src={course.thumbnail_url} alt="Thumbnail" className="w-full h-full object-cover" />
+                       ) : (
+                         <BookOpen size={48} className="text-gray-200" />
+                       )}
+                    </div>
+                    
+                    <div className="flex-1 space-y-4">
+                        <div className="flex flex-col sm:flex-row gap-4">
+                          <div className="flex-1">
+                            <input 
+                              type="text"
+                              value={course.thumbnail_url || ''}
+                              onChange={(e) => setCourse({...course, thumbnail_url: e.target.value})}
+                              className="w-full border border-gray-300 rounded-none p-3 text-xs font-mono outline-none focus:border-[#005b94] bg-gray-50/30"
+                              placeholder="Thumbnail URL..."
+                            />
+                          </div>
+                          <div className="flex gap-2">
+                            <input type="file" className="hidden" ref={thumbnailInputRef} onChange={handleThumbnailUpload} accept="image/*" />
+                            <Button 
+                              onClick={() => thumbnailInputRef.current?.click()}
+                              disabled={uploading}
+                              className="rounded-none border border-gray-300 bg-white text-[#005b94] hover:bg-gray-50 h-11 px-5 transition-none"
+                            >
+                              {uploading ? <Loader2 className="animate-spin" size={16} /> : <><FileUp size={16} className="mr-2" /> Upload Image</>}
+                            </Button>
+                          </div>
+                        </div>
+                        <p className="text-[10px] text-gray-400 italic">Recommended dimensions: 1200x800px. Supports PNG, JPG, WEBP.</p>
+                    </div>
+                  </div>
+              </div>
+
+              <div className="pt-12 border-t border-gray-100 flex justify-end items-center">
+                <div className="flex items-center gap-4">
+                   <p className="text-[10px] text-gray-400 font-bold uppercase">Metadata Sync Required</p>
+                   <Button 
+                    className="rounded-none bg-[#005b94] hover:bg-[#004a7a] text-white border-none uppercase font-bold text-[11px] h-11 px-12 transition-none shadow-md"
+                    onClick={handleUpdateCourse}
+                  >
+                    Save Course Settings
+                  </Button>
+                </div>
+              </div>
+            </div>
+          ) : activeItem ? (
             <div className="max-w-4xl mx-auto space-y-12">
               <div className="flex flex-col gap-4">
                 <div className="flex items-center gap-2">

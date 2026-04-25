@@ -3,6 +3,7 @@ import {
   createCourse, 
   getAllCourses, 
   getCourseById, 
+  updateCourse,
   deleteCourse,
   addSection,
   deleteSection,
@@ -25,6 +26,7 @@ router.get('/', authenticateToken, getAllCourses);
 
 // Admin only management routes
 router.post('/', authenticateToken, isAdmin, createCourse);
+router.put('/:id', authenticateToken, isAdmin, updateCourse);
 router.post('/sections', authenticateToken, isAdmin, addSection);
 router.patch('/sections/:id/lock', authenticateToken, isAdmin, toggleSectionLock);
 router.delete('/sections/:id', authenticateToken, isAdmin, deleteSection);

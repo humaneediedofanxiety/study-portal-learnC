@@ -17,7 +17,16 @@ interface Course {
 const CourseManager: React.FC = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [showAddForm, setShowAddForm] = useState(false);
-  const [newCourse, setNewCourse] = useState({ title: '', description: '', thumbnail_url: '' });
+  const [newCourse, setNewCourse] = useState({ 
+    title: '', 
+    description: '', 
+    thumbnail_url: '',
+    education_level: '',
+    instructor_name: '',
+    department: ''
+  });
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
   const { token } = useAuth();
   const navigate = useNavigate();
 
@@ -27,6 +36,29 @@ const CourseManager: React.FC = () => {
       setCourses(response.data);
     } catch (error) {
       console.error('Error fetching courses:', error);
+    }
+  };
+
+  const handleThumbnailUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    setUploading(true);
+    try {
+      const response = await api.post('/upload', formData, {
+        headers: { 
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      setNewCourse({ ...newCourse, thumbnail_url: response.data.url });
+    } catch (error) {
+      console.error('Thumbnail upload failed:', error);
+      alert('Thumbnail upload failed');
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -49,7 +81,14 @@ const CourseManager: React.FC = () => {
     try {
       await api.post('/courses', newCourse);
       setShowAddForm(false);
-      setNewCourse({ title: '', description: '', thumbnail_url: '' });
+      setNewCourse({ 
+        title: '', 
+        description: '', 
+        thumbnail_url: '',
+        education_level: '',
+        instructor_name: '',
+        department: ''
+      });
       fetchCourses();
     } catch (error) {
       alert('Failed to create course');
@@ -91,7 +130,7 @@ const CourseManager: React.FC = () => {
       <div className="max-w-[1200px] mx-auto mt-8 mb-12">
         {showAddForm && (
           <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50 animate-in fade-in duration-200">
-            <Card className="bg-white rounded-none border border-gray-300 p-8 w-full max-w-lg shadow-2xl space-y-6">
+            <Card className="bg-white rounded-none border border-gray-300 p-8 w-full max-w-2xl shadow-2xl space-y-6 overflow-y-auto max-h-[90vh]">
               <div className="flex items-center justify-between border-b border-gray-100 pb-4">
                  <h2 className="text-xl font-bold text-gray-800 uppercase tracking-tight">Register New Course</h2>
                  <button onClick={() => setShowAddForm(false)} className="text-gray-400 hover:text-gray-600"><X size={20} /></button>
@@ -108,6 +147,40 @@ const CourseManager: React.FC = () => {
                     placeholder="e.g., Introduction to Computer Science"
                   />
                 </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Education Level</label>
+                    <input 
+                      type="text"
+                      value={newCourse.education_level}
+                      onChange={(e) => setNewCourse({...newCourse, education_level: e.target.value})}
+                      className="w-full border border-gray-300 rounded-none px-4 py-2.5 text-sm focus:border-[#005b94] outline-none bg-gray-50/30"
+                      placeholder="e.g., Undergraduate"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Instructor</label>
+                    <input 
+                      type="text"
+                      value={newCourse.instructor_name}
+                      onChange={(e) => setNewCourse({...newCourse, instructor_name: e.target.value})}
+                      className="w-full border border-gray-300 rounded-none px-4 py-2.5 text-sm focus:border-[#005b94] outline-none bg-gray-50/30"
+                      placeholder="Instructor Name"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Department</label>
+                    <input 
+                      type="text"
+                      value={newCourse.department}
+                      onChange={(e) => setNewCourse({...newCourse, department: e.target.value})}
+                      className="w-full border border-gray-300 rounded-none px-4 py-2.5 text-sm focus:border-[#005b94] outline-none bg-gray-50/30"
+                      placeholder="e.g., EECS"
+                    />
+                  </div>
+                </div>
+
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Summary Description</label>
                   <textarea 
@@ -119,14 +192,25 @@ const CourseManager: React.FC = () => {
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Graphic Asset (URL)</label>
-                  <input 
-                    type="text" 
-                    value={newCourse.thumbnail_url}
-                    onChange={(e) => setNewCourse({...newCourse, thumbnail_url: e.target.value})}
-                    className="w-full border border-gray-300 rounded-none px-4 py-2.5 text-sm focus:border-[#005b94] outline-none bg-gray-50/30"
-                    placeholder="https://archive.learnc.edu/img.jpg"
-                  />
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Graphic Asset (URL or Upload)</label>
+                  <div className="flex gap-2">
+                    <input 
+                      type="text" 
+                      value={newCourse.thumbnail_url}
+                      onChange={(e) => setNewCourse({...newCourse, thumbnail_url: e.target.value})}
+                      className="flex-1 border border-gray-300 rounded-none px-4 py-2.5 text-sm focus:border-[#005b94] outline-none bg-gray-50/30"
+                      placeholder="https://archive.learnc.edu/img.jpg"
+                    />
+                    <input type="file" className="hidden" ref={fileInputRef} onChange={handleThumbnailUpload} accept="image/*" />
+                    <Button 
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={uploading}
+                      className="rounded-none border border-gray-300 bg-white text-[#005b94] hover:bg-gray-50 h-10 px-4 transition-none"
+                    >
+                      {uploading ? <Loader2 className="animate-spin" size={16} /> : <FileUp size={16} />}
+                    </Button>
+                  </div>
                 </div>
                 <div className="flex gap-4 pt-4">
                   <Button 
@@ -175,7 +259,10 @@ const CourseManager: React.FC = () => {
               </div>
               <div className="p-5 space-y-3">
                 <div className="flex items-center justify-between">
-                   <span className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">REF_ID: {course.id}</span>
+                   <div className="flex flex-col">
+                      <span className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">REF_ID: {course.id}</span>
+                      <span className="text-[9px] font-bold text-gray-500 uppercase">{course.department || 'General'} | {course.education_level || 'N/A'}</span>
+                   </div>
                    <span className="text-[9px] font-bold uppercase text-[#005b94] tracking-widest border border-[#005b94]/20 px-1.5 py-0.5 bg-blue-50/50">Active</span>
                 </div>
                 <h3 className="font-bold text-lg text-gray-800 leading-tight group-hover:text-[#005b94] transition-colors">{course.title}</h3>

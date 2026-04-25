@@ -7,16 +7,34 @@ interface AuthRequest extends Request {
 
 // Course CRUD
 export const createCourse = async (req: AuthRequest, res: Response) => {
-  const { title, description, thumbnail_url } = req.body;
+  const { title, description, thumbnail_url, education_level, instructor_name, department } = req.body;
   try {
     const result = await query(
-      'INSERT INTO courses (title, description, thumbnail_url) VALUES ($1, $2, $3) RETURNING *',
-      [title, description, thumbnail_url]
+      'INSERT INTO courses (title, description, thumbnail_url, education_level, instructor_name, department) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+      [title, description, thumbnail_url, education_level, instructor_name, department]
     );
     res.status(201).json(result.rows[0]);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Error creating course' });
+  }
+};
+
+export const updateCourse = async (req: AuthRequest, res: Response) => {
+  const { id } = req.params;
+  const { title, description, thumbnail_url, education_level, instructor_name, department } = req.body;
+  try {
+    const result = await query(
+      `UPDATE courses 
+       SET title = $1, description = $2, thumbnail_url = $3, education_level = $4, instructor_name = $5, department = $6 
+       WHERE id = $7 RETURNING *`,
+      [title, description, thumbnail_url, education_level, instructor_name, department, id]
+    );
+    if (result.rows.length === 0) return res.status(404).json({ message: 'Course not found' });
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error updating course' });
   }
 };
 
