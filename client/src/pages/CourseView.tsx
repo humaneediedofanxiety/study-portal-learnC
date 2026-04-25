@@ -164,7 +164,7 @@ const CourseView: React.FC = () => {
             <span className="opacity-70 truncate">{course.title}</span>
           </nav>
           <div className="text-[11px] font-bold uppercase tracking-wider mb-1 opacity-90">
-            {course.id || 'LearnC.-OCW'} | Spring 2026 | Graduate
+            {course.department || 'LearnC.-OCW'} | {course.education_level || 'General'}
           </div>
           <h1 className="text-3xl font-medium tracking-tight">
             {course.title}
@@ -359,25 +359,37 @@ const CourseView: React.FC = () => {
          <div className="w-full md:w-72 bg-gray-50 p-8 border-l border-gray-200 space-y-10 shrink-0">
             <div className="aspect-[4/3] bg-white border border-gray-300 p-2 shadow-sm">
                <div className="w-full h-full bg-gray-100 flex flex-col items-center justify-center text-gray-300 gap-2">
-                  <FileText size={32} />
-                  <span className="text-[9px] font-bold uppercase tracking-widest text-center px-4">Course Visual Representation</span>
+                  {course.thumbnail_url ? (
+                    <img src={course.thumbnail_url} alt={course.title} className="w-full h-full object-cover" />
+                  ) : (
+                    <>
+                      <FileText size={32} />
+                      <span className="text-[9px] font-bold uppercase tracking-widest text-center px-4">Course Visual Representation</span>
+                    </>
+                  )}
                </div>
             </div>
             
             <div className="space-y-6">
                <div className="space-y-1">
                   <h4 className="text-[10px] font-bold uppercase text-gray-400 tracking-widest">Instructor</h4>
-                  <p className="text-[13px] font-bold text-[#005b94] hover:underline cursor-pointer">Mahmudul Hasan</p>
+                  <p className="text-[13px] font-bold text-[#005b94] hover:underline cursor-pointer">
+                    {course.instructor_name || 'Mahmudul Hasan'}
+                  </p>
                </div>
                
                <div className="space-y-1">
                   <h4 className="text-[10px] font-bold uppercase text-gray-400 tracking-widest">Department</h4>
-                  <p className="text-[13px] font-bold text-[#005b94] hover:underline cursor-pointer leading-tight">EECS | Electrical Engineering & Computer Science</p>
+                  <p className="text-[13px] font-bold text-[#005b94] hover:underline cursor-pointer leading-tight">
+                    {course.department || 'EECS | Electrical Engineering & Computer Science'}
+                  </p>
                </div>
 
                <div className="space-y-1">
                   <h4 className="text-[10px] font-bold uppercase text-gray-400 tracking-widest">Educational Level</h4>
-                  <p className="text-[13px] font-medium text-gray-700">Graduate Level</p>
+                  <p className="text-[13px] font-medium text-gray-700">
+                    {course.education_level || 'General Level'}
+                  </p>
                </div>
             </div>
 

@@ -81,9 +81,20 @@ const initDB = async () => {
     for (const file of schemaFiles) {
       const filePath = path.join(__dirname, 'models', file);
       if (fs.existsSync(filePath)) {
+        console.log(`Loading schema file: ${file}`);
         const sql = fs.readFileSync(filePath, 'utf8');
-        await query(sql);
-        console.log(`Executed schema file: ${file}`);
+        const statements = sql.split(';').filter(stmt => stmt.trim() !== '');
+        for (let i = 0; i < statements.length; i++) {
+          try {
+            await query(statements[i]);
+          } catch (err: any) {
+            // Ignore errors for ADD COLUMN if it already exists as we don't have IF NOT EXISTS for all PG versions
+            if (!err.message.includes('already exists')) {
+              console.warn(`Error in statement ${i} of ${file}:`, err.message);
+            }
+          }
+        }
+        console.log(`Processed schema file: ${file}`);
       }
     }
     

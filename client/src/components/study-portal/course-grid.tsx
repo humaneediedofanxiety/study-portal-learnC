@@ -15,7 +15,7 @@ export function CourseGrid() {
     const fetchCourses = async () => {
       try {
         const response = await api.get('/courses');
-        setCourses(response.data);
+        setCourses(Array.isArray(response.data) ? response.data : []);
       } catch (error) {
         console.error('Error fetching dashboard courses:', error);
       } finally {
@@ -45,15 +45,19 @@ export function CourseGrid() {
               <Card
                 className="h-full border border-gray-200 bg-white hover:border-[#005b94] transition-all overflow-hidden flex flex-col gap-0 rounded-none shadow-none group-hover:shadow-sm"
               >
-                {/* Course Thumbnail Placeholder (LearnC. Style) */}
+                {/* Course Thumbnail placeholder/image */}
                 <div className="aspect-video bg-gray-100 flex items-center justify-center border-b border-gray-200 group-hover:bg-[#005b94]/5 transition-colors">
-                  <GraduationCap className="h-12 w-12 text-gray-300 group-hover:text-[#005b94]/30 transition-colors" />
+                  {course.thumbnail_url ? (
+                    <img src={course.thumbnail_url} alt={course.title} className="w-full h-full object-cover" />
+                  ) : (
+                    <GraduationCap className="h-12 w-12 text-gray-300 group-hover:text-[#005b94]/30 transition-colors" />
+                  )}
                 </div>
 
                 <div className="p-5 flex-1 flex flex-col">
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-[9px] font-bold bg-gray-50 text-[#333] px-1.5 py-0.5 border border-gray-200 rounded-none uppercase tracking-widest">
-                      Graduate
+                      {course.education_level || 'General'}
                     </span>
                     <span className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">
                       Module {course.id}
@@ -71,7 +75,7 @@ export function CourseGrid() {
                   <div className="flex items-center justify-between text-[10px] text-gray-400 border-t border-gray-100 pt-4 font-bold uppercase mt-auto tracking-widest">
                     <div className="flex items-center gap-1">
                       <Users className="h-3 w-3" />
-                      <span>Prof. Mahmudul Hasan</span>
+                      <span>{course.instructor_name || 'Public LearnC.'}</span>
                     </div>
                     <div className="flex items-center gap-1 group-hover:text-[#005b94] transition-colors">
                       <span>Enter</span>

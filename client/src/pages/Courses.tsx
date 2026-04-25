@@ -69,7 +69,7 @@ const Courses: React.FC = () => {
                   <div className="p-5 flex-1 flex flex-col">
                     <div className="flex items-center gap-2 mb-2">
                       <span className="text-[9px] font-bold bg-secondary text-[#333] px-1.5 py-0.5 rounded-none uppercase tracking-widest border border-border">
-                        Graduate
+                        {course.education_level || 'General'}
                       </span>
                       <span className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">
                         Module {course.id}
@@ -87,7 +87,7 @@ const Courses: React.FC = () => {
                     <div className="flex items-center justify-between text-[10px] text-gray-400 border-t border-gray-100 pt-4 font-bold uppercase mt-auto tracking-widest">
                       <div className="flex items-center gap-1">
                         <Users className="h-3 w-3" />
-                        <span>Public LearnC.</span>
+                        <span>{course.instructor_name || 'Public LearnC.'}</span>
                       </div>
                       <div className="flex items-center gap-1 group-hover:text-primary">
                         <span>View</span>
