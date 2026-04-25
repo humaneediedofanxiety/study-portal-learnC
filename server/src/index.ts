@@ -42,22 +42,13 @@ app.use('/api/upload', uploadRoutes);
 app.use('/api/user', userRoutes);
 
 // Serve static files from the client dist directory
-// Search for the frontend in common locations
-const potentialPaths = [
-  path.join(process.cwd(), 'dist/client'),
-  path.join(process.cwd(), 'client'),
-  path.join(__dirname, 'client'),
-  path.join(__dirname, '../../client/dist'),
-  '/app/server/dist/client'
-];
+const clientDistPath = path.resolve(__dirname, 'client');
+console.log(`Checking for frontend at: ${clientDistPath}`);
 
-let clientDistPath = potentialPaths[0];
-for (const p of potentialPaths) {
-  if (fs.existsSync(path.join(p, 'index.html'))) {
-    clientDistPath = p;
-    console.log(`Frontend found at: ${p}`);
-    break;
-  }
+if (fs.existsSync(path.join(clientDistPath, 'index.html'))) {
+  console.log('Frontend index.html found!');
+} else {
+  console.warn('Frontend index.html NOT found at startup path.');
 }
 
 app.use(express.static(clientDistPath));
@@ -67,13 +58,20 @@ app.get('*path', (req, res) => {
   if (req.path.startsWith('/api')) {
     return res.status(404).send('API endpoint not found');
   }
+  
   const indexPath = path.join(clientDistPath, 'index.html');
   
   if (fs.existsSync(indexPath)) {
     res.sendFile(indexPath);
   } else {
-    // Debug info to help identify where it's looking
-    res.status(404).send(`LMS-AI API is running... (Frontend not found. Looked in: ${clientDistPath}. CWD: ${process.cwd()})`);
+    // Ultimate fallback for debugging
+    const fallbackMessage = `
+      LMS-AI API is running. 
+      Frontend not found at: ${indexPath}
+      __dirname: ${__dirname}
+      CWD: ${process.cwd()}
+    `;
+    res.status(404).send(fallbackMessage);
   }
 });
 

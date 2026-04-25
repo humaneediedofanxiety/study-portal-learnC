@@ -1,19 +1,22 @@
 services:
-  # Unified Web Service (Server + Client)
   - type: web
     name: lms-ai
     env: node
     plan: free
+    # Run build from the root of the repo
     buildCommand: |
-      # Build client
+      echo "--- Building Client ---"
       cd client && npm install && npm run build
-      # Build server
+      echo "--- Building Server ---"
       cd ../server && npm install && npm run build
-      # Move client dist into server's dist folder
+      echo "--- Organizing Files ---"
+      # Ensure server/dist/client exists and is clean
+      rm -rf dist/client
       mkdir -p dist/client
-      cp -r ../client/dist/* dist/client/
-      echo "Contents of server/dist:"
-      ls -R dist/
+      # Copy client build to server dist
+      cp -r ../client/dist/* ./dist/client/
+      echo "--- Build Complete ---"
+      ls -F ./dist/client/
     startCommand: cd server && npm start
     envVars:
       - key: NODE_VERSION
