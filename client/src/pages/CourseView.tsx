@@ -154,16 +154,25 @@ const CourseView: React.FC = () => {
   // Helper to convert Archive.org detail links to direct download links
   const getDirectUrl = (url: string) => {
     if (!url) return '';
-    // If it's already a direct download link, return it
-    if (url.includes('/download/')) return url;
     
-    // If it's an archive.org details link
-    if (url.includes('archive.org/details/')) {
-      const parts = url.split('/');
-      const identifier = parts[parts.indexOf('details') + 1];
-      // We try to guess the filename or just point to the zip/file directory
-      // Best practice is to use the download link directly, but this helps
-      return url.replace('/details/', '/download/');
+    // Handle Archive.org specifically
+    if (url.includes('archive.org/')) {
+      // If it's already a direct download or embed link, return it
+      if (url.includes('/download/') || url.includes('/embed/')) return url;
+      
+      // If it's an archive.org details link
+      if (url.includes('/details/')) {
+        const parts = url.split('/');
+        const identifier = parts[parts.indexOf('details') + 1];
+        
+        // If the URL ends with a file extension, convert to download link
+        if (url.match(/\.(pdf|mp4|jpg|png|webp|zip)$/i)) {
+          return url.replace('/details/', '/download/');
+        }
+        
+        // Otherwise, return an embed link for the whole item (best for reader/player)
+        return `https://archive.org/embed/${identifier}`;
+      }
     }
     return url;
   };
@@ -294,7 +303,9 @@ const CourseView: React.FC = () => {
                                 </div>
 
                                 <div className="border border-gray-200 p-2 bg-gray-50">
-                                  {getDirectUrl(activeItem.file_url).match(/\.(jpeg|jpg|gif|png|webp|svg)$/i) ? (
+                                  {getDirectUrl(activeItem.file_url).includes('archive.org/embed/') ? (
+                                    <iframe src={getDirectUrl(activeItem.file_url)} className="w-full h-[600px] border border-gray-300 bg-white" title="Archive.org Preview" allowFullScreen />
+                                  ) : getDirectUrl(activeItem.file_url).match(/\.(jpeg|jpg|gif|png|webp|svg)$/i) ? (
                                     <img src={getDirectUrl(activeItem.file_url)} alt="Resource" className="max-w-full h-auto mx-auto shadow-sm" />
                                   ) : getDirectUrl(activeItem.file_url).match(/\.(mp4|webm|ogg)$/i) ? (
                                     <video src={getDirectUrl(activeItem.file_url)} controls className="max-w-full h-auto mx-auto shadow-sm" />
