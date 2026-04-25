@@ -16,6 +16,11 @@ interface Course {
   department?: string;
 }
 
+const repoThumbnails = [
+  { name: 'ENIAC Computing', url: '/thumbnails/ENIAC-changing_a_tube_(cropped).jpg' },
+  { name: 'Fiber Optics', url: '/thumbnails/cable-network-fiber-optic-cable-connect-to-switch-port-in-server-room-concept-network-management-free-photo.jpg' },
+];
+
 const CourseManager: React.FC = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
@@ -29,8 +34,6 @@ const CourseManager: React.FC = () => {
     instructor_name: '',
     department: ''
   });
-  const [uploading, setUploading] = useState(false);
-  const fileInputRef = React.useRef<HTMLInputElement>(null);
   const { token } = useAuth();
   const navigate = useNavigate();
 
@@ -48,29 +51,6 @@ const CourseManager: React.FC = () => {
       setError(`Connection Error: ${error.message || 'Registry unavailable'}`);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleThumbnailUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const formData = new FormData();
-    formData.append('file', file);
-
-    setUploading(true);
-    try {
-      const response = await api.post('/upload', formData, {
-        headers: { 
-          'Content-Type': 'multipart/form-data'
-        }
-      });
-      setNewCourse(prev => ({ ...prev, thumbnail_url: response.data.url }));
-    } catch (error) {
-      console.error('Thumbnail upload failed:', error);
-      alert('Thumbnail upload failed');
-    } finally {
-      setUploading(false);
     }
   };
 
@@ -214,43 +194,48 @@ const CourseManager: React.FC = () => {
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Graphic Asset (URL or Upload)</label>
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Graphic Asset (URL or Repository Selection)</label>
                   <div className="flex flex-col gap-4">
                     {newCourse.thumbnail_url && (
                       <div className="w-full h-32 bg-gray-100 border border-gray-200 overflow-hidden flex items-center justify-center">
                         <img src={newCourse.thumbnail_url} alt="Preview" className="w-full h-full object-cover" />
                       </div>
                     )}
-                    <div className="flex gap-2">
+                    <div className="space-y-4">
                       <input 
                         type="text" 
                         value={newCourse.thumbnail_url}
                         onChange={(e) => setNewCourse({...newCourse, thumbnail_url: e.target.value})}
-                        className="flex-1 border border-gray-300 rounded-none px-4 py-2.5 text-sm focus:border-[#005b94] outline-none bg-gray-50/30"
-                        placeholder="https://archive.learnc.edu/img.jpg"
+                        className="w-full border border-gray-300 rounded-none px-4 py-2.5 text-sm focus:border-[#005b94] outline-none bg-gray-50/30 font-mono"
+                        placeholder="Image path or URL..."
                       />
-                      <input type="file" className="hidden" ref={fileInputRef} onChange={handleThumbnailUpload} accept="image/*" />
-                      <Button 
-                        type="button"
-                        onClick={() => fileInputRef.current?.click()}
-                        disabled={uploading}
-                        className="rounded-none border border-gray-300 bg-white text-[#005b94] hover:bg-gray-50 h-10 px-4 transition-none"
-                        title="Local Upload (Temporary)"
-                      >
-                        {uploading ? <Loader2 className="animate-spin" size={16} /> : <FileUp size={16} />}
-                      </Button>
-                      <Button 
-                        type="button"
-                        onClick={() => window.open('https://archive.org/upload/', '_blank')}
-                        variant="outline"
-                        className="rounded-none border-[#005b94] text-[#005b94] hover:bg-blue-50 h-10 px-4 transition-none"
-                        title="Host on Archive.org (Permanent)"
-                      >
-                        Host on Archive
-                      </Button>
+                      
+                      <div className="space-y-2">
+                        <label className="text-[9px] font-bold uppercase tracking-widest text-gray-400">Select from Repository</label>
+                        <div className="grid grid-cols-4 gap-2">
+                          {repoThumbnails.map((thumb) => (
+                            <button
+                              key={thumb.url}
+                              type="button"
+                              onClick={() => setNewCourse({...newCourse, thumbnail_url: thumb.url})}
+                              className={`group relative aspect-[4/3] border-2 transition-all overflow-hidden ${
+                                newCourse.thumbnail_url === thumb.url ? 'border-[#005b94]' : 'border-gray-200 hover:border-gray-300'
+                              }`}
+                            >
+                              <img src={thumb.url} alt={thumb.name} className="w-full h-full object-cover" />
+                              {newCourse.thumbnail_url === thumb.url && (
+                                <div className="absolute top-1 right-1 bg-[#005b94] text-white p-0.5">
+                                  <Plus size={8} className="rotate-45" />
+                                </div>
+                              )}
+                            </button>
+                          ))}
+                        </div>
                       </div>
-                      <p className="text-[10px] text-gray-500 mt-1 italic">Use Archive.org for permanent 2-3GB storage.</p>
-                      </div>                </div>
+                      <p className="text-[10px] text-gray-500 mt-1 italic">These images are stored permanently in the repository.</p>
+                    </div>
+                  </div>
+                </div>
                 <div className="flex gap-4 pt-4">
                   <Button 
                     type="button"
