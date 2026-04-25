@@ -9,14 +9,12 @@ services:
       cd client && npm install && npm run build
       echo "--- Building Server ---"
       cd ../server && npm install && npm run build
-      echo "--- Organizing Files ---"
-      # Ensure server/dist/client exists and is clean
+      echo "--- Finalizing Structure ---"
+      # Move build assets to where the server expects them
       rm -rf dist/client
       mkdir -p dist/client
-      # Copy client build to server dist
       cp -r ../client/dist/* ./dist/client/
-      echo "--- Build Complete ---"
-      ls -F ./dist/client/
+      echo "--- Deployment Ready ---"
     startCommand: cd server && npm start
     envVars:
       - key: NODE_VERSION

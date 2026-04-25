@@ -5,7 +5,7 @@
   "main": "index.js",
 "scripts": {
   "start": "node dist/index.js",
-  "build": "tsc && cp -r src/models dist/ && (if [ -d \"../client\" ]; then cd ../client && npm install && npm run build && cd ../server && mkdir -p dist/client && cp -rf ../client/dist/* dist/client/; fi)",
+  "build": "tsc && cp -r src/models dist/",
   "dev": "ts-node-dev --respawn --transpile-only src/index.ts"
 },  "keywords": [],
   "author": "",
